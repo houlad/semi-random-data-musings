@@ -1,0 +1,10 @@
+file: example_data.rds
+file_size: 9051
+pin_hash: 65a9e222e5220ab1
+type: rds
+title: Snippet of full data for displaying
+description: ~
+tags: ~
+urls: ~
+created: 20251118T164003Z
+api_version: 1

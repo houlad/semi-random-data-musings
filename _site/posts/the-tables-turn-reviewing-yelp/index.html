@@ -1,0 +1,1430 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.40">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Adam">
+<meta name="dcterms.date" content="2018-04-11">
+
+<title>The Tables Turn: Reviewing Yelp! – Semi-Random Data Musings</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-f33991cf3c59b7de71e019b8ce5d8602.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed fullcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Semi-Random Data Musings</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/houlad"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://mastodon.social/@adam_houl"> <i class="bi bi-mastodon" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">The Tables Turn: Reviewing Yelp!</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">R</div>
+                <div class="quarto-category">nlp</div>
+                <div class="quarto-category">data visualization</div>
+                <div class="quarto-category">sentiment</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Adam </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">April 11, 2018</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<p>For those who know me, it’s no secret that I love food. Whether it’s a bowl of ramen, delicious BBQ or a (half-dozen)warm cookie, if there is food to be tried, I want to try it. With that in mind, imagine how excited I was when I learned that Yelp had an enormous <a href="https://www.yelp.com/dataset/challenge">dataset</a> to play with. If you are unfamiliar, <a href="yelp.com">Yelp</a> is a website devoted to reviews of just about any sort of business you can think of – restaurants, gyms, barbers, doctors, etc. With these reviews, users of the site are able to choose establishments to visit with more confidence that their hard earned dollars are going to be well spent.</p>
+<p>The Yelp dataset, specifically, is a (seemingly) complete subset of Yelp data from selected cities in North America and Europe. It includes information about businesses and users from the selected cities as well as review, checkin, and tip data. There are also additional files with the photos people have uploaded to Yelp . To put it bluntly, it’s a lot of fucking data. All told, it’s about 15GB worth of information. Even more incredible still, it’s pretty much current data–right now it goes through the end of 2017, but they keep updating the dataset, so I’d imagine we’ll start seeing 2018 data in a couple months. I can’t overstate how exciting it is to have access to this sort of data.</p>
+<p>Finding this dataset was quite nice timing since I have been looking for a nice end to end project for a couple weeks. Over the next couple weeks, I plan on analyzing, modeling and, ultimately, building a simple web app to showcase the model. The Yelp dataset seems perfect for this– personally interesting data, a non-trivial amount of data processing, and, most importantly, a wide range of modeling topics to choose from. With all that intro, let’s take and look at the data and get started!</p>
+</section>
+<section id="problem-formulation" class="level1">
+<h1>Problem Formulation</h1>
+<p>While there are gobs of information in this dataset, right from the start the reviews stood out to me. I think natural language processing is a fascinating area and, while I have a good handle on how things are done, I haven’t gone end-to-end with a state of the art NLP system. How lucky that I have 5 million+ text reviews at my disposal now(insert evil laughter?)</p>
+<p>The NLP field has come a long way in the past couple years. The use of recurrent neural networks(RNN) and long short-term memory networks(LSTM) to model language has generated expressive, contextually sophisticated models that can do everything from generating new context specific text to classifying comments as <a href="https://www.kaggle.com/c/jigsaw-toxic-comment-classification-challenge">toxic</a>. This got me wondering whether you can accurately classify a text review as a good or bad review. Taken one step further, can you accurately predict whether a text review is a 1-5 star review? A human will read a review and intuitively recognize the review structure, word associations and subtle features of language such as sarcasm. It’s a tall order to think you can model all of that nuance, but neural networks can create enormously rich models, so let’s give it a shot. First though, I want to explore the dataset to get a sense of what I am working with.</p>
+</section>
+<section id="initial-data-analysis" class="level1">
+<h1>Initial Data Analysis</h1>
+<p>With such a big dataset, I want to get a feel for the data first. Let’s have a look at the business table to see how the data is structured. (Note: Initial cleaning was performed in the <a href="https://github.com/houlad/Yelp/blob/master/read_data.R">read_data.R</a> script which can be found in the repo for this project. The files were all json files–with some added wrinkles–so it’s worth checking that out if you are curious.)</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 10
+  business_id      name  neighborhood city  state postal_code stars review_count
+  &lt;chr&gt;            &lt;chr&gt; &lt;chr&gt;        &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;       &lt;dbl&gt;        &lt;int&gt;
+1 PfOCPjBrlQAnz__… Bric… ""           Cuya… OH    44221         3.5          116
+2 PfOCPjBrlQAnz__… Bric… ""           Cuya… OH    44221         3.5          116
+3 PfOCPjBrlQAnz__… Bric… ""           Cuya… OH    44221         3.5          116
+4 PfOCPjBrlQAnz__… Bric… ""           Cuya… OH    44221         3.5          116
+5 PfOCPjBrlQAnz__… Bric… ""           Cuya… OH    44221         3.5          116
+6 PfOCPjBrlQAnz__… Bric… ""           Cuya… OH    44221         3.5          116
+# ℹ 2 more variables: is_open &lt;int&gt;, categories &lt;chr&gt;</code></pre>
+</div>
+</div>
+<p>During the initial cleaning, I removed all non-US businesses and all businesses that did not have the ‘restaurant’ tag in the category section. This left about 100,000 rows of data. There are only 32,277 unique restaurants, so what are the other rows? Since almost every restaurant is tagged by multiple categories, the additional rows are duplicate rows of restaurant X to enumerate all the categories for said restaurant. Note that the restaurant filtering didn’t end up being as exclusive as I would have hoped. Many ‘restaurants’ were tagged with non-food related categories, but since they also included a restaurant tag, they’ve been included. Hingetown restaurant in Ohio, for instance, is tagged as a museum and florist as well as a restaurant.</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">name</th>
+<th style="text-align: left;">categories</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Hingetown</td>
+<td style="text-align: left;">Shopping</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Hingetown</td>
+<td style="text-align: left;">Flowers &amp; Gifts</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Hingetown</td>
+<td style="text-align: left;">Arts &amp; Entertainment</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Hingetown</td>
+<td style="text-align: left;">Cafes</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Hingetown</td>
+<td style="text-align: left;">Coffee &amp; Tea</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Hingetown</td>
+<td style="text-align: left;">Local Flavor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Hingetown</td>
+<td style="text-align: left;">Museums</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Hingetown</td>
+<td style="text-align: left;">Shopping Centers</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Hingetown</td>
+<td style="text-align: left;">Art Galleries</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Hingetown</td>
+<td style="text-align: left;">Florists</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Hingetown</td>
+<td style="text-align: left;">Food</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>There’s not a whole lot I can do here, and since Yelp is OK with this sort of classification scheme, I will be too.</p>
+<section id="how-are-restaurant-ratings-distributed" class="level2">
+<h2 class="anchored" data-anchor-id="how-are-restaurant-ratings-distributed">How are restaurant ratings distributed?</h2>
+<p>Since my ultimate goal is to predict restaurant ratings from the text of reviews I’m going to focus my analysis on the reviews and the ratings to make sure I have a good understanding of the data before I start modeling. In that spirit, what does the distribution of restaurant ratings look like?</p>
+<section id="overall" class="level3">
+<h3 class="anchored" data-anchor-id="overall">Overall</h3>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/overall-rating-plot-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The overall shape of the distribution is about what I expected. I imagine that most restaurants that hover around the 1-2 star range don’t stay in business very long, so they aren’t very well represented here. And even the best restaurants have off nights and off customers, so it’s not surprising that there aren’t a ton of 5 star restaurants.</p>
+</section>
+<section id="by-state" class="level3">
+<h3 class="anchored" data-anchor-id="by-state">By State</h3>
+<p>Does this distribution look different state to state? If I filter out the states that only have a small number of restaurants, the distributions look pretty similar state to state. All state distributions are negatively skewed with very similar averages. Just from a first look, it doesn’t seem like you see a lot of variation in how state’s restaurants are rated.</p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># From initial plots, I know many states are included that have only</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># a handful of reviews. Eliminate these from plotting since they don't</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># contain enough data to plot meaningful distributions</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">state =</span> <span class="fu">c</span>(<span class="st">"AZ"</span>, <span class="st">"NC"</span>, <span class="st">"NV"</span>, <span class="st">"OH"</span>, <span class="st">"PA"</span>, <span class="st">"WI"</span>), </span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>                 <span class="at">full =</span> <span class="fu">c</span>(<span class="st">"Arizona"</span>, <span class="st">"North Carolina"</span>, <span class="st">"Nevada"</span>, <span class="st">"Ohio"</span>, <span class="st">"Pennsylvania"</span>, <span class="st">"Wisconsin"</span>))</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>avgs <span class="ot">&lt;-</span> restaurants<span class="sc">%&gt;%</span><span class="fu">distinct</span>(business_id, <span class="at">.keep_all =</span> <span class="cn">TRUE</span>)<span class="sc">%&gt;%</span><span class="fu">group_by</span>(state)<span class="sc">%&gt;%</span><span class="fu">select</span>(stars)<span class="sc">%&gt;%</span><span class="fu">summarise</span>(<span class="at">avg =</span><span class="fu">round</span>(<span class="fu">mean</span>(stars), <span class="dv">2</span>))</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">inner_join</span>(df, avgs, <span class="at">by =</span>  <span class="st">'state'</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Hackish way to put avg rating on plot facets</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">bind_cols</span>(df, </span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>                <span class="at">pos =</span> <span class="fu">data.frame</span>(<span class="at">y =</span> <span class="fu">c</span>(<span class="dv">2000</span>, <span class="dv">750</span>, <span class="dv">1500</span>, <span class="dv">1000</span>, <span class="dv">750</span>, <span class="dv">325</span>)))</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>restaurants<span class="sc">%&gt;%</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># remove duplicate businesses (from the categories ennumeration)</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>(business_id, <span class="at">.keep_all =</span> <span class="cn">TRUE</span>)<span class="sc">%&gt;%</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>(state <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">'AK'</span>, <span class="st">'CA'</span>, <span class="st">'CO'</span>, <span class="st">'IN'</span>, <span class="st">'NY'</span>, <span class="st">'VA'</span>, <span class="st">'IL'</span>, <span class="st">'SC'</span>)))<span class="sc">%&gt;%</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># join my avg's df to be used for facet labeling</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inner_join</span>(df, <span class="at">by =</span> <span class="st">'state'</span>)<span class="sc">%&gt;%</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(full)<span class="sc">%&gt;%</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(stars))<span class="sc">+</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">fill =</span> <span class="st">'midnightblue'</span>, <span class="at">color =</span> <span class="st">'black'</span>, <span class="at">alpha =</span> .<span class="dv">7</span>, <span class="at">bins =</span> <span class="dv">9</span>)<span class="sc">+</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>full, <span class="at">scales =</span> <span class="st">'free'</span>)<span class="sc">+</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">my_theme</span>()<span class="sc">+</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">'Ratings'</span>,</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">'# of Restaurants'</span>,</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">'Distribution of Yelp Ratings by State'</span>)<span class="sc">+</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="at">data =</span> df,</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>            <span class="fu">aes</span>(<span class="at">x =</span> <span class="sc">-</span><span class="cn">Inf</span>, <span class="at">y =</span> y, <span class="at">label =</span> <span class="fu">paste0</span>(<span class="st">"Avg Rating: "</span>, avg)),</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>            <span class="at">hjust =</span> <span class="sc">-</span><span class="fl">0.1</span>,</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>            <span class="at">vjust =</span> <span class="sc">-</span><span class="dv">1</span>,</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>            <span class="at">size =</span> <span class="fl">2.5</span>,</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>            <span class="at">family =</span> <span class="st">'AvanteGarde'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/state-ratings-plot-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="by-category" class="level3">
+<h3 class="anchored" data-anchor-id="by-category">By Category</h3>
+<p>When I look at how ratings are distributed by category, I start to see some variation. Below are the 6 most common restaurant categories and their ratings distributions. While ‘Food’ and ‘Sandwiches’ look similar to the distributions I have seen so far, ‘Fast Food’ is quite different. The skew is reversed–a majority of restaurants have 2-3 star ratings instead of 3-4– and the distribution is much wider. ‘Bars’ and ‘Nightlife’ are narrower distributions with more pronounced peaks and ‘American’ is much closer to normal than the others.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/categories-ratings-plot-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">categories</th>
+<th style="text-align: right;">avg</th>
+<th style="text-align: right;">var</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">American (Traditional)</td>
+<td style="text-align: right;">3.36</td>
+<td style="text-align: right;">0.50</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Bars</td>
+<td style="text-align: right;">3.51</td>
+<td style="text-align: right;">0.42</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Fast Food</td>
+<td style="text-align: right;">2.79</td>
+<td style="text-align: right;">0.79</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Food</td>
+<td style="text-align: right;">3.75</td>
+<td style="text-align: right;">0.59</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Nightlife</td>
+<td style="text-align: right;">3.51</td>
+<td style="text-align: right;">0.42</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Sandwiches</td>
+<td style="text-align: right;">3.45</td>
+<td style="text-align: right;">0.68</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>The data in the table is exactly what’s visible in the plot. ‘Fast food’ has a lower average rating with the highest variance and ‘Bars’ and ‘Nightlife’ have the lowest variance of all the categories included. Variance in data is a good thing here as it indicates restaurant categories are a useful predictor of restaurant ratings. I can explore this idea a bit more by taking a look at the highest variance restaurant categories and comparing to the lowest variance ones.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/high-var-plot-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Notice that automotive is high variance, but the number of restaurants with the automotive tag is very low, so it’s very possible that this distribution doesn’t have enough data to be trustworthy. The others make sense though– at least in my opinion. Aside from automotive, these are all fast, casual food types where you can see a wide variety of customers and a wide variety of quality. A good burger to one person is awful to another just because of the peculiarities of taste.</p>
+<p>Conversely, if I look at low variance categories I see they tend to be more niche. My guess is that the clientele at these sort of restaurants knows, generally, what to expect, and so they are less often ‘surprised’ (in both good and bad ways) by the food. That’s just speculation though, so who knows. Note: the low variance plot is actually a sample of the low variance categories because there are ~30 categories with a similar variance at the low end. Make sure you use the same seed I did if you want to replicate the plot.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/low-variance-categories-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>This variation by category makes some intuitive sense and is something that could be included in a standard regression sort of ratings prediction algorithm. I probably won’t extend the NLP based predictions to include outside variables such as categories, but it could be done and is something that should certainly be looked at if you were looking to really fine tune your model. For now, it’s enough to say that there is a relationship between restaurant category and restaurant rating.</p>
+</section>
+<section id="alternative-plot-for-categories" class="level3">
+<h3 class="anchored" data-anchor-id="alternative-plot-for-categories">Alternative plot for Categories</h3>
+<p>While viewing the distribution this way is informative, ultimately I’m using the overall rating for all restaurants of category X to build the plots. I actually have <em>individual review</em> level data though, so I should take advantage of it. I can gather up the many thousands of reviews about, for instance, Chinese restaurants and use those to display the breakdown of each categories reviews. This will give a nice tidy view of how reviews of each restaurant category vary.</p>
+<p>There are over 600 unique categories, so first I have to find the most common categories and filter down the dataset. Here I choose categories in the top 72%(because that made the prettiest plot!), but you could play around with any number to make a plot to your liking. From there, it’s just a matter of grouping the restaurants by category and rating to get review totals and then using that information to calculate averages for each category. Simple, right?</p>
+<p>The final plot below is ordered by average category rating–the top category has the highest average rating and the bottom the lowest. You can see from this the higher the average rating, the higher the proportion of 4 and 5 star reviews. This is something that intuitively we know, but the plot hammers home the point.</p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Select a color palette for the plot</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>colors <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">brewer.pal</span>(<span class="dv">9</span>, <span class="st">'PuBu'</span>)[<span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">6</span>, <span class="dv">7</span>, <span class="dv">8</span>, <span class="dv">9</span>)])</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># I need information from both df's so I join them on business_id</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>joined_df <span class="ot">&lt;-</span> <span class="fu">inner_join</span>(restaurants, sample_reviews, <span class="at">by =</span> <span class="st">'business_id'</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>t <span class="ot">&lt;-</span> joined_df <span class="sc">%&gt;%</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Group by category and sum the # of unique restaurants of each category</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(categories)<span class="sc">%&gt;%</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">t =</span> <span class="fu">n_distinct</span>(business_id))<span class="sc">%&gt;%</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Need to ungroup to filter down to the top 3/4's of the restaurants</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()<span class="sc">%&gt;%</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(t <span class="sc">&gt;=</span> <span class="fu">quantile</span>(t, .<span class="dv">28</span>))<span class="sc">%&gt;%</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Now we regroup by category and star so we can calculate the total number</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  <span class="co"># of reviews category X had for 1, 2, 3, etc stars</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Looks as follows eg:</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Chinese: 1 star, 1234 reviews</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Chinese: 2 star, 1494 reviews</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Chinese: 3 star, 2003 reviews</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Chinese: 4 star, 2500 reviews</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Chinese: 5 star, 750 reviews</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(categories, stars.y)<span class="sc">%&gt;%</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">count =</span> <span class="fu">n</span>())<span class="sc">%&gt;%</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>  <span class="co"># redo grouping by just category</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()<span class="sc">%&gt;%</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(categories)<span class="sc">%&gt;%</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>  <span class="co"># grab the avg rating for each category </span><span class="al">NOTE</span><span class="co"> this way sucks, I need a better way to do it</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">working =</span> stars.y<span class="sc">*</span>count, <span class="at">avg =</span> <span class="fu">sum</span>(working)<span class="sc">/</span><span class="fu">sum</span>(count))<span class="sc">%&gt;%</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>  <span class="co"># clean up df</span></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>working)<span class="sc">%&gt;%</span></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>  <span class="co"># sort by categorey and rating</span></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(categories, stars.y)</span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a><span class="co"># Use the df created above to get a ranking of the categories by avg rating</span></span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a><span class="co"># This is used to order the categories in the final plot</span></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>rankings <span class="ot">&lt;-</span> t <span class="sc">%&gt;%</span></span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>(categories, <span class="at">.keep_all =</span> <span class="cn">TRUE</span>)<span class="sc">%&gt;%</span></span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(categories, avg)<span class="sc">%&gt;%</span></span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(avg))</span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a><span class="co"># Reorder categories by avg so that you get the cascade effect seen in the final plot</span></span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>t<span class="sc">$</span>categories <span class="ot">&lt;-</span> <span class="fu">factor</span>(t<span class="sc">$</span>categories, <span class="at">levels =</span> <span class="fu">rev</span>(rankings<span class="sc">$</span>categories))</span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a><span class="co"># actual plotting</span></span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(t, <span class="fu">aes</span>(<span class="at">x =</span> categories, <span class="at">y =</span> count, <span class="at">fill =</span> <span class="fu">as.factor</span>(stars.y)))<span class="sc">+</span></span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">'identity'</span>, <span class="at">position =</span> <span class="st">'fill'</span>, <span class="at">alpha =</span> .<span class="dv">8</span>)<span class="sc">+</span></span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>()<span class="sc">+</span></span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>  <span class="co"># this percent labeling requires scales package</span></span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> percent)<span class="sc">+</span></span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">my_theme</span>()<span class="sc">+</span></span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.title =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.position=</span><span class="st">"top"</span>,</span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.direction=</span><span class="st">"horizontal"</span>,</span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.key.width=</span><span class="fu">unit</span>(<span class="fl">0.75</span>, <span class="st">"cm"</span>),</span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.key.height=</span><span class="fu">unit</span>(<span class="fl">0.1</span>, <span class="st">"cm"</span>),</span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.margin=</span><span class="fu">margin</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="sc">-</span><span class="fl">0.1</span>, <span class="sc">-</span><span class="dv">2</span>, <span class="st">"cm"</span>))<span class="sc">+</span></span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values=</span>colors, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"1 Star"</span>, <span class="st">"2 Star"</span>, <span class="st">"3 Star"</span>, <span class="st">"4 Star"</span>, <span class="st">"5 Star"</span>))<span class="sc">+</span></span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">'Proportion of Reviews'</span>,</span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">''</span>, </span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">'Yelp Reviews by Restaurant Category'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/reviews-by-category-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="how-are-individual-reviews-distributed" class="level2">
+<h2 class="anchored" data-anchor-id="how-are-individual-reviews-distributed">How are individual reviews distributed?</h2>
+<p>An important thing to keep in mind about the analysis from section 3.1 is that, for the most part, I am looking at restaurant level aggregation. So, for example, restaurant Foo had 2 one star reviews, 1 four star review and 2 five star reviews for an overall rating of 3.2 stars. This is great for looking at how the industry as a whole is ordered, but I’m going to be looking at individual level reviews when I build my model. I can’t tell much of anything about how reviews look at the individual level by examining them in their aggregated form. Luckily, I also have individual review level data to play with. There were ~5m reviews in the original dataset, about half of which were restaurants of some sort. That’s a pretty hefty size corpus to manage, so I randomly sampled about a 1/10th of the dataset to use for exploration.</p>
+<section id="all-reviewsfrom-the-sample-data" class="level3">
+<h3 class="anchored" data-anchor-id="all-reviewsfrom-the-sample-data">All reviews(from the sample data)</h3>
+<p>So what sort of reviews are people leaving on Yelp?</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/individual-reviews-distribution-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Interesting! People are actually more likely to leave good reviews, especially 5 star ones. If I think back to the overall distribution in 3.1.1 I can imagine how this glut of 4 and 5 stars reviews is moderated by the 1 star reviews to bring the average restaurant level review down to about 3.5. Just mulling over how I imagine people use Yelp, I’d imagine you see so many good reviews because a good restaurant experience is something people are excited about and probably motivated to share. A mediocre experience isn’t something–at least personally–that people are as compelled to post like a really good or bad review.</p>
+</section>
+<section id="revisiting-variance-but-on-the-individual-review-level" class="level3">
+<h3 class="anchored" data-anchor-id="revisiting-variance-but-on-the-individual-review-level">Revisiting variance, but on the individual review level</h3>
+<p>Before, we saw that certain types of restaurants had a lot more variation in their overall ratings than others. Does this hold true when we start to dig down into the individual review level? If I extract the highest variance categories on the individual review level and plot them I see some old friends from our distribution plots in 3.1.</p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>joined_df<span class="sc">%&gt;%</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Could use this filtering to get the exact columns as before, but they aren't strictly the highest variance at this level.</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># filter(categories %in% c("Burgers", "Chicken Shop", "Chicken Wings", "Fast Food", "Hot Dogs", "Donuts"))%&gt;%</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(categories)<span class="sc">%&gt;%</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">total =</span> <span class="fu">n_distinct</span>(review_id), <span class="at">var =</span> <span class="fu">var</span>(stars.y))<span class="sc">%&gt;%</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()<span class="sc">%&gt;%</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Had to play around with the # of reviews to filter on here. Could be changed</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(total <span class="sc">&gt;=</span> <span class="dv">250</span>)<span class="sc">%&gt;%</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(var <span class="sc">&gt;=</span> <span class="fu">quantile</span>(var, .<span class="dv">97</span>))<span class="sc">%&gt;%</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(categories, stars.y)<span class="sc">%&gt;%</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">total =</span> <span class="fu">n</span>())<span class="sc">%&gt;%</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(stars.y, total))<span class="sc">+</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">'firebrick4'</span>, <span class="at">color =</span> <span class="st">'black'</span>, <span class="at">alpha =</span> .<span class="dv">7</span>)<span class="sc">+</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>categories, <span class="at">scales =</span> <span class="st">'free'</span>)<span class="sc">+</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">my_theme</span>()<span class="sc">+</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">'Ratings'</span>,</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">'# of Reviews'</span>,</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">'Yelp Ratings for Restaurant Types with </span><span class="sc">\n</span><span class="st"> High Variance'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/individual-reviews-high-var-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>These restaurants all have significantly more 1 star reviews than a typical Yelp restaurant. It’s a much flatter plot than, for example, this group of low variance categories shown below.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/individual-reviews-low-var-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>This reinforces the relationship discovered above between restaurant category and rating. We see it on both the restaurant and individual review level. This is definitely a feature I’d want to include in a more standard, tabular data sort of supervised model. I’m curious whether the text in the reviews of these various categories differs to a degree that we can observe. Further still, are these categories so different that a text based model will perform at different levels on different categories. Or to clarify by example–it’s commonly known that many facial recognition neural networks are significantly less accurate when trying to identify members of ethnic minority classes. Am I going to see similar issues when dealing with minority restaurant categories since they appear to behave differently in the way they are reviewed? Let’s look into the review text itself to see if we can gather some more insight.</p>
+</section>
+</section>
+</section>
+<section id="initial-text-exploration" class="level1">
+<h1>Initial Text Exploration</h1>
+<p>Now that I have a basic idea how the reviews are distributed, I am going to take a brief look at the text of the reviews. First, I need to tokenize the text of the reviews. This will break the blocks of text into components. I can do this in many different ways – individual word, bigram, ngram, character, etc–and regardless of how I choose to do it, <a href="https://cran.r-project.org/web/packages/tidytext/index.html">tidytext</a> makes this process really seamless.</p>
+<p>After tokenizing the review text, there’s almost no end to how I can analyse the text. Just offhand, I could:</p>
+<ul>
+<li>Explore review length and how it varies by category/state/date/etc.</li>
+<li>Look at measures of sentiment across numerous axes.</li>
+<li>Examine review structure by tagging parts of speech.</li>
+<li>Model topics in a whole host of ways–from older techniques such as Linear Discriminant Analysis(LDA) to state of the art such as <a href="https://arxiv.org/abs/1506.08422">topic2vec</a>.</li>
+</ul>
+<p>I’ll briefly explore a few avenues to more fully understand the data, but encourage those reading to explore further on their own and <a href="https://twitter.com/Adam_Houl">share</a>.</p>
+<section id="overall-review-length" class="level2">
+<h2 class="anchored" data-anchor-id="overall-review-length">Overall Review Length</h2>
+<p>A simple, but important, first look is seeing how long these reviews are. Are these quick 10 word ditties or 5000 word NYT-esque behemoths? This could completely change how I’d have to go about representing the review text when I build the model.</p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Tokenize review text</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># all_tokens &lt;- sample_reviews%&gt;%</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   unnest_tokens(word, text)</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Count up how many times each word is used in each review</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co"># word_per_review &lt;- all_tokens%&gt;%</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">#   count(review_id, word, sort = TRUE)</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Save data and load it in to save time</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co"> Make sure this works when uploading to kernel</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co"># saveRDS(word_per_review, file = 'review_words.rds')</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>word_per_review <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"Data"</span>, <span class="st">'review_words.rds'</span>))</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Count total # of words used in a review and then add the date back</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>total_words_by_review <span class="ot">&lt;-</span> word_per_review<span class="sc">%&gt;%</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(review_id)<span class="sc">%&gt;%</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">total =</span> <span class="fu">sum</span>(n))<span class="sc">%&gt;%</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inner_join</span>(sample_reviews, <span class="at">by =</span> <span class="st">'review_id'</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">date =</span> <span class="fu">as.Date</span>(date))</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>avg <span class="ot">&lt;-</span> total_words_by_review<span class="sc">%&gt;%</span><span class="fu">summarise</span>(<span class="at">avg =</span> <span class="fu">mean</span>(total))</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="co"># see how many words are in reviews over time</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>total_words_by_review<span class="sc">%&gt;%</span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(<span class="at">monthly =</span> <span class="fu">floor_date</span>(date, <span class="st">'month'</span>), stars)<span class="sc">%&gt;%</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">avg_len =</span> <span class="fu">mean</span>(total))<span class="sc">%&gt;%</span></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(monthly, avg_len))<span class="sc">+</span></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()<span class="sc">+</span></span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_smooth</span>(<span class="at">size =</span> .<span class="dv">3</span>, <span class="at">color =</span> <span class="st">'red'</span>)<span class="sc">+</span></span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">my_theme</span>()<span class="sc">+</span></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">''</span>,</span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">'# of Words in Average Review'</span>,</span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">'Average Yelp Review Length, by Month'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/tokenize-review-text-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>What’s going on with that mass of messy data from ~2005 to 2008? Well, Yelp was founded around the end of 2004 and, at first glance at least, the initial review length appears quite different from the current trend and <em>significantly</em> more varied. However, there were significantly fewer reviews starting out (obviously, since the company wasn’t as well known) and it took Yelp many years to stabilize to it’s current levels. Looking at the table below, we don’t really start to see a substantial number of reviews until 2009.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Year</th>
+<th style="text-align: right;">Total Reviews</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">2004-01-01</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2005-01-01</td>
+<td style="text-align: right;">54</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2006-01-01</td>
+<td style="text-align: right;">319</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2007-01-01</td>
+<td style="text-align: right;">1220</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2008-01-01</td>
+<td style="text-align: right;">2904</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2009-01-01</td>
+<td style="text-align: right;">5115</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2010-01-01</td>
+<td style="text-align: right;">9194</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2011-01-01</td>
+<td style="text-align: right;">14730</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2012-01-01</td>
+<td style="text-align: right;">16944</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2013-01-01</td>
+<td style="text-align: right;">22563</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2014-01-01</td>
+<td style="text-align: right;">33000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2015-01-01</td>
+<td style="text-align: right;">43328</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2016-01-01</td>
+<td style="text-align: right;">48544</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2017-01-01</td>
+<td style="text-align: right;">52082</td>
+</tr>
+</tbody>
+</table>
+<p>Once the number of reviews written grows enough the data becomes more orderly. There has been a decline in the average review length over the past several years. The average review length sits at 108.31 words per review.</p>
+<section id="review-length-by-rating" class="level3">
+<h3 class="anchored" data-anchor-id="review-length-by-rating">Review Length By Rating</h3>
+<p>If I zoom in a bit and look at the past two years faceted by ratings, differences start to become apparent.</p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>avgs <span class="ot">&lt;-</span> total_words_by_review<span class="sc">%&gt;%</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(stars)<span class="sc">%&gt;%</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="st">`</span><span class="at">Average word count</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">round</span>(<span class="fu">mean</span>(total),<span class="dv">2</span>))<span class="sc">%&gt;%</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">Stars =</span> stars)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>total_words_by_review<span class="sc">%&gt;%</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(date <span class="sc">&gt;=</span><span class="st">'2015-12-11'</span>)<span class="sc">%&gt;%</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(<span class="at">weekly =</span> <span class="fu">floor_date</span>(date, <span class="st">'week'</span>), stars)<span class="sc">%&gt;%</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">avg_len =</span> <span class="fu">mean</span>(total))<span class="sc">%&gt;%</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(weekly, avg_len))<span class="sc">+</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()<span class="sc">+</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_smooth</span>(<span class="at">size =</span> .<span class="dv">5</span>, <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">color =</span> <span class="st">'red'</span>)<span class="sc">+</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">my_theme</span>()<span class="sc">+</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>stars, <span class="at">scales =</span> <span class="st">'free'</span>)<span class="sc">+</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">''</span>,</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">'# of Words in Average Review'</span>,</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">'Average Yelp Review Length by Rating, by Week'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/text-length-by-rating-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Stars</th>
+<th style="text-align: right;">Average word count</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">126.56</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">136.53</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">129.81</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">112.72</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">86.22</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Good reviews tend to be significantly shorter and 5 star reviews are the shortest of all by a good amount. Perhaps people like to vent when they have a bad restaurant experience, but when they have a good one they are more succinct – ie “Great Food!” could be a full review for a 5 star restaurant.</p>
+</section>
+<section id="review-length-by-category" class="level3">
+<h3 class="anchored" data-anchor-id="review-length-by-category">Review Length By Category</h3>
+<p>I want to briefly examine the issue discussed at the end of section 3.2.2. Am I able to discern differences in the text of reviews between categories. Using information I gathered above, I’ll filter down to reviews for a couple of the highest variance (Fast Food and Chicken Wings) and a couple of the lowest variance(Vegan and Vegetarian) categories.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/review-text-by-categories-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>It appears that the higher variance categories (Chicken Wings and Fast Food) tend to have shorter poor reviews than our sample low variance categories. At the high end of the ratings there isn’t much difference though. This is a good start to determining if you can tell the difference between categories by review text alone. It seems like review length could be one helpful indicator.</p>
+</section>
+</section>
+<section id="sentiment-schmentiment" class="level2">
+<h2 class="anchored" data-anchor-id="sentiment-schmentiment">Sentiment Schmentiment</h2>
+<p>Another useful avenue to explore for developing some understand of the reviews is doing some sentiment analysis. There are many flaws to sentiment analysis, but as a starting point it’s incredibly useful. For instance, maybe I am interested in seeing what the average sentiment looks like for various ratings. Since I already have tokenized text, that’s a simple task. I’m using the ‘afinn’ sentiment score which assigns a rating of -5 to 5 to words depending on it’s predetermined sentiment level. Words like ‘outstanding’ receive high sentiment values while ‘fraud’ or ‘shit’ are scored with very low sentiment values.</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Stars</th>
+<th style="text-align: right;">Average Sentiment</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">-0.04</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.82</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">1.51</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">2.05</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">2.29</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>As expected, higher ratings tend to have higher sentiment scores. But I can take this a step further– perhaps I am interested in seeing how ‘service’ being mentioned affects the average sentiment. I can filter for reviews that contain the word ‘service’ and recalculate the sentiments to get an idea of how the review changes. In this case, it looks like ‘service’ being mentioned in a good review is related to having a higher average sentiment, while ‘service’ in a bad review is accompanied by a small drop in average sentiment.</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Stars</th>
+<th style="text-align: right;">Average Sentiment</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">-0.09</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.79</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">1.53</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">2.14</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">2.42</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<section id="has-the-average-sentiment-of-a-review-changed-over-time" class="level3">
+<h3 class="anchored" data-anchor-id="has-the-average-sentiment-of-a-review-changed-over-time">Has the Average Sentiment of a Review Changed Over Time?</h3>
+<p>One fascinating area to explore is whether reviews have become more positive or negative throughout the years. If I group the reviews by month and rating, I can examine whether, perhaps, bad reviews have gotten more extravagantly negative throughout the years.</p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>word_per_review<span class="sc">%&gt;%</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inner_join</span>(<span class="fu">get_sentiments</span>(<span class="st">'afinn'</span>), <span class="at">by =</span> <span class="st">'word'</span>)<span class="sc">%&gt;%</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inner_join</span>(sample_reviews, <span class="at">by =</span> <span class="st">'review_id'</span>)<span class="sc">%&gt;%</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">date =</span> <span class="fu">as.Date</span>(date)) <span class="sc">|&gt;</span> </span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(date <span class="sc">&gt;=</span><span class="st">'2009-01-01'</span>)<span class="sc">%&gt;%</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(<span class="at">monthly =</span> <span class="fu">floor_date</span>(date, <span class="st">'month'</span>), stars)<span class="sc">%&gt;%</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">sentiment =</span> <span class="fu">mean</span>(value), <span class="at">words =</span> <span class="fu">n</span>())<span class="sc">%&gt;%</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(monthly, sentiment))<span class="sc">+</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()<span class="sc">+</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">color =</span> <span class="st">'red'</span>, <span class="at">size =</span> .<span class="dv">5</span>)<span class="sc">+</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>stars, <span class="at">scales =</span> <span class="st">'free'</span>)<span class="sc">+</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">my_theme</span>()<span class="sc">+</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">''</span>,</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">'Average Monthly Sentiment'</span>,</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">'Average Sentiment of Yelp Reviews 2009-2017, by Rating'</span>,</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">'(Data Grouped by Month)'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/average-sentiment-over-time-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>(Note: I decided to filter out reviews before 2009.) This is a pretty amazing insight. It seems that negative reviews have gotten more negative and positive reviews have gotten more positive. Interestingly, if you don’t facet this plot, the average sentiment has stayed pretty much constant since 2009. I’m a little bit suspicious of this drastic of a change in sentiment in the reviews. My gut is that the shortening length of 5 star reviews over time is giving greater emphasis to the words you’d expect in a 5 star review –amazing, fantastic, etc. So the presence of these words in shorter and shorter reviews is pushing up–or down in the case of negative words–the averages over time.</p>
+</section>
+<section id="review-length-versus-review-sentiment" class="level3">
+<h3 class="anchored" data-anchor-id="review-length-versus-review-sentiment">Review Length versus Review Sentiment</h3>
+<p>I can explore this a tiny bit by doing a scatter plot of individual reviews with review length on the X axis and sentiment for that review on the Y axis.</p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>length_sentiment <span class="ot">&lt;-</span> word_per_review<span class="sc">%&gt;%</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inner_join</span>(<span class="fu">get_sentiments</span>(<span class="st">'afinn'</span>), <span class="at">by =</span> <span class="st">'word'</span>)<span class="sc">%&gt;%</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(review_id)<span class="sc">%&gt;%</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">sentiment =</span> <span class="fu">mean</span>(value), <span class="at">words =</span> <span class="fu">n</span>())<span class="sc">%&gt;%</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inner_join</span>(total_words_by_review, <span class="at">by =</span> <span class="st">'review_id'</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>length_sentiment<span class="sc">%&gt;%</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(total, sentiment))<span class="sc">+</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> .<span class="dv">1</span>)<span class="sc">+</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">color =</span> <span class="st">'red'</span>, <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">size =</span> .<span class="dv">5</span>)<span class="sc">+</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">color =</span> <span class="st">'steelblue'</span>, <span class="at">linetype =</span> <span class="dv">2</span>)<span class="sc">+</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>stars)<span class="sc">+</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">my_theme</span>()<span class="sc">+</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">'# of Words in Review'</span>,</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">'Review Sentiment'</span>,</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">'Yelp Review Length vs. Review Sentiment Score'</span>,</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">'Grouped by Rating'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/review-length-by-sentiment-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>So short reviews seem to be more hyperbolic. The shorter the review the more likely it will be scored with a very high or very low sentiment rating. That seems to fall in line with what I mentioned above about a handful of very positive or negative words carrying a ton of weight in shorter reviews.</p>
+<p>But one question you should have when looking at this plot is ‘How come 1 star and 5 star reviews both have so many high and low sentiment reviews?’ And that’s a good point. Why are we seeing low sentiment 5 star reviews at all? This is an issue with using basic sentiment analysis. ‘Feta-freaking-licious. Holy shit. That’s all I can say.’ is a 5 star review, but has a -4 sentiment score. There are several reasons for this. The ‘afinn’ sentiment dataset is relatively small and many words aren’t captured by it. This reduces the number of words that are scored, again giving more weight to those words that <em>are</em> scored. One of the words that <em>is</em> included is ‘shit’, which happens to receive a -4 score. Any human that reads this review will recognize that ‘Holy shit’ is a good exclamation in this context, but our naive sentiment scoring can’t pickup on that. This sort of sentiment analysis will also mishandle negation of words – ‘not like’ is obviously negative to us, but will be see as ‘like’ to the sentiment analysis(at least in it’s present form).</p>
+<p>And similar things happen in the negative reviews that receive high sentiment scores. ‘Would make for an outstanding buffets for dogs, raccoons or other animals.’ is obviously a negative review to humans, but all our sentiment analysis sees is ‘outstanding’. There are a number of ways you could go about strengthening this sentiment analysis–for instance, by using bi and trigrams to gather more context from each review–but I won’t deal with that here. Since my model is a completely different NLP approach I’ll just point out the limitations and gather what information I can from the sentiment analysis.</p>
+<p>Even with all that bad news about sentiment analysis, I can still use it to gain some valuable, subtle insights. I can see that shorter 4 and 5 star reviews tend to be very positive. Looking into those reviews, you see a lot of ‘Outstanding food, and some random sentence of praise here’ reviews. Short, sweet, and very positive. As we get longer reviews, it’s not that these ‘outstandings’ disappear, it’s that they are moderated by a plethora of other words in the longer review. It’s essentially a regression to the mean effect. You see that in the trend line drifting down to a slightly lower sentiment. Similar effects are seen in the 1 star reviews, but in the opposite direction. Reviews gradually trend more positive as the length of a bad review grows–all the starkly negative words are averaged out with more moderate sentiment words.</p>
+</section>
+<section id="average-sentiment-by-category" class="level3">
+<h3 class="anchored" data-anchor-id="average-sentiment-by-category">Average Sentiment by Category</h3>
+<p>Another step towards understanding the difference seen between categories is looking at the average sentiment of their reviews. Here, again, it’s obvious that sentiment of these high variance review restaurants is generally lower. Now it’s important to note that Fast Food and Chicken Wing restaurants on average receive lower ratings than Vegan and Vegetarian restaurants, so we’d have to control for this rating difference to see if this sentiment difference is real or is an artifact of the rating difference. I think this could be an instance where propensity score matching would help balance the dataset so we could more accurately examine the difference in sentiment rating between restaurant types, but I’ll leave that as an exercise for the reader.</p>
+<p>For now, I can say that sentiment for Chicken Wings and Fast Food has trended down over the past several years while Vegan and Vegetarian may have seen a mild increase in average sentiment.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/sentiment-score-by-category-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="what-are-the-most-influential-words-in-good-vs.-bad-reviews" class="level3">
+<h3 class="anchored" data-anchor-id="what-are-the-most-influential-words-in-good-vs.-bad-reviews">What are the most influential words in good vs.&nbsp;bad reviews</h3>
+<p>One last way I will examine review sentiment is to see which words have the greatest influence on the sentiment of reviews. I’ll do this by looking at the number of times that a word occurs in a review and multiplying that by that words sentiment score.</p>
+<p>As you can see below, the contributions look quite different for each separate rating. 1 star reviews are overwhelmed by words such as bad, worst and horrible, while 5 star reviews are dominated by positive words such as amazing and love. It’s important to, again, point out that sentiment analysis by word won’t catch certain intricacies of the English language. I have a feeling if I were to look at bigrams of review text, I’d see that what actually occurs most often in 1 star reviews is ‘didn’t love’ or ‘not recommend’ rather than ‘love’ and ‘recommend’. This sort of negation is missed by word level tokenization, but could be easily captured by bigrams if you were so inclined.</p>
+<p>Still, the visualization is quite informative. You see more and more positive influence as you go from 1 to 5 star reviews, which tells me I am capturing the general idea of a review even if I am missing some details. In general, this gives me confidence that there are actual word usage differences between ratings that my model will be able to identify and use for prediction.</p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>t <span class="ot">&lt;-</span> word_per_review<span class="sc">%&gt;%</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">anti_join</span>(stop_words)<span class="sc">%&gt;%</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inner_join</span>(sample_reviews, <span class="at">by =</span> <span class="st">'review_id'</span>)<span class="sc">%&gt;%</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">date =</span> <span class="fu">as.Date</span>(date)) <span class="sc">|&gt;</span> </span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>text)<span class="sc">%&gt;%</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inner_join</span>(<span class="fu">get_sentiments</span>(<span class="st">'afinn'</span>), <span class="at">by =</span> <span class="st">'word'</span>)<span class="sc">%&gt;%</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(stars, word)<span class="sc">%&gt;%</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">occurences =</span> <span class="fu">n</span>(), <span class="at">contribution =</span> <span class="fu">sum</span>(value))<span class="sc">%&gt;%</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">top_n</span>(<span class="dv">15</span>, <span class="fu">abs</span>(contribution))<span class="sc">%&gt;%</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()<span class="sc">%&gt;%</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(stars, contribution)<span class="sc">%&gt;%</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">order =</span> <span class="fu">row_number</span>())</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(t, <span class="fu">aes</span>(order, contribution, <span class="at">fill =</span> contribution <span class="sc">&gt;</span> <span class="dv">0</span>))<span class="sc">+</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">show.legend =</span> <span class="cn">FALSE</span>)<span class="sc">+</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>stars, <span class="at">scales =</span> <span class="st">'free'</span>)<span class="sc">+</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">breaks =</span> t<span class="sc">$</span>order,</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">labels =</span> t<span class="sc">$</span>word,</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>)</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>  )<span class="sc">+</span></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>()<span class="sc">+</span></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">my_theme</span>()<span class="sc">+</span></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">''</span>,</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">'Contribution toward Sentiment'</span>,</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">'Words with the Highest Contribution Towards Sentiment'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/sentiment-contribution-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="what-words-are-influencing-our-selected-restaurant-categories" class="level3">
+<h3 class="anchored" data-anchor-id="what-words-are-influencing-our-selected-restaurant-categories">What words are influencing our selected restaurant categories?</h3>
+<p>And finally I decided to do the same sort of sentiment contribution analysis, but focus on our selected restaurant categories. The differences aren’t as noticeable here, but some word contributions still stand out. Fast food has a lot of contribution from ‘clean’ and ‘fresh’ and ‘wrong’ while those words don’t show up in any of the other 3 categories. I imagine Fast Food reviews focus on slightly different signals than other restaurants. Since fast food is standardized across restaurants, the differentiating factors are things like the restaurant being clean, or the fries being fresh, or your order being wrong. These are all things that are taken for granted–more or less–at non-fast food restaurants and so maybe these factors rise to a higher level of importance for the fast food category, resulting in their appearance in more fast food reviews.</p>
+<p>If there are similar identifiers in other categories then it bodes well for there being textual differences amongst the different restaurant categories. They may be subtle, but hopefully our neural network will pickup on them.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/sentiment-contribution-by-category-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="conclusions" class="level1">
+<h1>Conclusions</h1>
+<p>The Yelp dataset is huge, with an enormous range of avenues to explore, but I think I was able to get a decent handle on how Yelp reviews look through this initial exploration. Review length varies a considerable amount, but very few reviews blow up in size to the point where they will have to be handled separately. There seems to be a strong relationship between the text in the review and a restaurants rating as shown by the sentiment analysis which gives me confidence that an NLP based approach to rating prediction will be successful.</p>
+<p>This exploration is by no means complete and there are certain areas–such as my complete neglection of restaurant locations and names as well as entire tables of data–ie user related info. But, one must pick and choose with a dataset like this when confronted with the realities of limited time.</p>
+<p>This initial exploration is part one of my Yelp dataset series. As always, the full code for this analysis can be found <a href="https://github.com/houlad/ahoulblog/blob/main/content/post/2018-04-11-the-tables-turn-reviewing-yelp/index.Rmd">here</a> In part two I will build on this post and use review text to build a neural network to predict review ratings from the text of the review itself. Sounds like a fun challenge to me! Until next time.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

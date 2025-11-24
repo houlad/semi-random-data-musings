@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.40">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Adam">
+<meta name="dcterms.date" content="2018-01-04">
+
+<title>Violent Crime Revisited – Semi-Random Data Musings</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-f33991cf3c59b7de71e019b8ce5d8602.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed fullcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Semi-Random Data Musings</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/houlad"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://mastodon.social/@adam_houl"> <i class="bi bi-mastodon" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Violent Crime Revisited</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">R</div>
+                <div class="quarto-category">data visualization</div>
+                <div class="quarto-category">poisson</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Adam </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">January 4, 2018</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+
+<p>Occasionally I like to revisit my old blog posts. Since I try to treat them as a means to enhance my data science toolkit, old posts will often look quite naive when viewed several months (or years) down the road. But, these (often embarrassing) periods of reflection end up being great teaching moments. A perfect example of this occurred when I was looking back through my examination of violent crime in Louisville. While, in general, I stand by the conclusions of that report, my analysis of the daily violent crime distributions never felt like the correct method of determining significance. In that post, I was examining the 2016 daily distribution of violent crimes to see if it truly was an exceptionally bad year for violent crime. Leveraging the distributions in Figure 1, I determined that there was a statistically significant difference in the mean number of violent crimes per day in 2016 vs 2005-2015.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/real-data-dist-plot-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Daily Violent Crime Distribution</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    One Sample t-test
+
+data:  sums_2016$count
+t = 6.7818, df = 363, p-value = 4.83e-11
+alternative hypothesis: true mean is not equal to 10.30027
+95 percent confidence interval:
+ 11.34913 12.20582
+sample estimates:
+mean of x 
+ 11.77747 </code></pre>
+</div>
+</div>
+<section id="to-t-test-or-not-to-t-test-that-is-the-question" class="level3">
+<h3 class="anchored" data-anchor-id="to-t-test-or-not-to-t-test-that-is-the-question">To T-test, Or Not To T-test, That Is The Question</h3>
+<p>Several things about that analysis always seemed off though. In effect, that analysis was asking if the daily values I saw in 2016 were consistent with a world where the true violent crime rate was given by the mean daily average from 2005-2015 – in this case 10.3 crimes per day. In my analysis, the answer to this question was no, the 2016 values seemed to come from a different distribution.</p>
+<p>However, in statistics, there are a thousand tests to run and <em>choosing</em> the right one is a non-trivial process. Using the wrong test can, and often does, lead to incorrect conclusions. By using a t-test, I am making a decision to collapse my data significantly. I start with a detailed account of 12 years of crimes, but I end up reducing the data set down to two numbers– a mean for 2005-2015 and a mean for 2016. This sort of analysis doesn’t take advantage of my rich data set and unnecessarily gets rid of valuable information. That’s generally a bad idea when doing data analysis.</p>
+<p>Additionally, a t-test assumes that the data follows a normal distribution and has homogeneous variance. Though the distributions do look fairly normal, I know this data is counting the occurrences of an event and <em>that</em> is something modeled much more appropriately by a Poisson distribution. If my data is modeled by a Poisson distribution, I can use what’s called a Poisson test to see whether the rate parameter–in this case the expected violent crime count–is the same for a pair of measurements. Using some basic information about my data allows me to choose a more appropriate statistical test.</p>
+<p>When applying this test, I could use the daily data as I did in my initial analysis. However, the daily counts vary significantly and many days have very few crimes at all. Also, I don’t particularly care if two single days have different crime rates. So instead of daily crime counts, I want to use yearly counts to test if the crime rate for the <em>year</em> is different. I could just as easily look at monthly or quarterly data, but a yearly rate has a nice ring to it.</p>
+<p>As you can see below, the Poisson test rejects the null hypothesis that the 2015 and 2016 violent crime rates are the same. This indicates we can be relatively confident that the rate of violent crime went up in 2016.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Comparison of Poisson rates
+
+data:  c(year_sums$total[1], year_sums$total[2]) time base: c(1, 1)
+count1 = 4011, expected count1 = 4149, p-value = 0.002535
+alternative hypothesis: true rate ratio is not equal to 1
+95 percent confidence interval:
+ 0.8959669 0.9770115
+sample estimates:
+rate ratio 
+ 0.9356193 </code></pre>
+</div>
+</div>
+<p>But seeing as how I’m revisiting this post, that doesn’t quite satisfy my curiosity. What if 2016 was just bad luck? What if the violent crime rate didn’t actually change and we just got really unlucky and ‘drew’ poorly from Louisville’s Poisson crime distribution. Luckily, I can simulate 2016 data pretty easily and use that simulated data to get some idea of how ‘unlucky’ 2016 was. If I go with the assumption that 2016 is unchanged from 2015, I can repeatedly draw from a poisson distribution with lambda equal to 2015’s violent crime total. Doing this repeatedly can tell me how often I’d see results as high as 2016’s if the rate of violent crime hadn’t really changed.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>poisson_test <span class="ot">&lt;-</span> <span class="cf">function</span>(){</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  sim_val <span class="ot">&lt;-</span> <span class="fu">rpois</span>(<span class="dv">1</span>, <span class="at">lambda =</span> year_sums<span class="sc">$</span>total[<span class="dv">1</span>]) <span class="co"># draw one sample from a poisson distribution with lambda equal to 2015 total</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  p_val <span class="ot">&lt;-</span> <span class="fu">poisson.test</span>(<span class="at">x =</span> <span class="fu">c</span>(year_sums<span class="sc">$</span>total[<span class="dv">1</span>], sim_val), <span class="at">T =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>))<span class="sc">$</span>p.value <span class="co"># Perform poisson.test with simulated 2016 value and save p.values</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(p_val)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">replicate</span>(<span class="dv">10000</span>, <span class="fu">poisson_test</span>()) <span class="co"># perform this simulation 10000 times and store the p_values</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co"># check how many times we find a significant result</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(results<span class="sc">&lt;</span><span class="fl">0.05</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 48</code></pre>
+</div>
+</div>
+<p>My results show that only 48 times out of 10,000 did I see results that would allow me to reject the null hypothesis that the rates were equal. In raw numbers, this means I saw values of 4190 or higher only 48 times. The actual 2016 count of 4287 seems even more extreme now. Both the Poisson test and the Poisson Monte Carlo simulations make me a little more confident that 2016 was an abnormally high violent crime year, but I can actually use some regression modeling techniques to further explore this problem.</p>
+</section>
+<section id="poisson-regression-modeling" class="level3">
+<h3 class="anchored" data-anchor-id="poisson-regression-modeling">Poisson Regression Modeling</h3>
+<p>Linear regression is a fundamental technique in data science. Practitioners regularly use it to model the linear relationships between dependent and independent variables. Poisson regression is a generalization of the regression model that assumes the response variable follows a Poisson distribution. Using this assumption allows us to model count data like we have in our violent crime problem.</p>
+<p>In this specific instance, I am interested in the relationship between the violent crime counts and the year. By looking at the strength of the year to count relationship, I should be able to gain some intuition for just how unusual a year 2016 was for violent crime. Regression modeling is pretty simple in <em>R</em>. I apply the correct filtering and then use the <em>glm</em> function to build a Poisson regression model.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a df with violent crimes counts grouped by year</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> crime_lou<span class="sc">%&gt;%</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(nibrs_code <span class="sc">==</span> <span class="st">'13a'</span><span class="sc">|</span>nibrs_code <span class="sc">==</span> <span class="st">'120'</span><span class="sc">|</span>nibrs_code <span class="sc">==</span> <span class="st">'09a'</span><span class="sc">|</span>nibrs_code <span class="sc">==</span> <span class="st">'11a'</span>)<span class="sc">%&gt;%</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(year)<span class="sc">%&gt;%</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">count =</span> <span class="fu">n</span>())</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>fit.poi <span class="ot">&lt;-</span> <span class="fu">glm</span>(count <span class="sc">~</span> year, <span class="at">data =</span> df, <span class="at">family =</span> poisson)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit.poi)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = count ~ year, family = poisson, data = df)
+
+Coefficients:
+             Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept) -6.360505   2.720892  -2.338   0.0194 *  
+year         0.007266   0.001353   5.369 7.91e-08 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 160.18  on 11  degrees of freedom
+Residual deviance: 131.35  on 10  degrees of freedom
+AIC: 256.36
+
+Number of Fisher Scoring iterations: 3</code></pre>
+</div>
+</div>
+<p>A first glance at the results seems to show year as a significant variable, but the residual deviance indicates a problem with our model. At 13.1 our scale factor(the residual deviance divided by the degrees of freedom) is 13 times higher than the guideline threshold indicating overdispersed data. Essentially, this means that our variance is higher than expected under the theoretical Poisson model. It also means that our model isn’t very good, but with only 12 data points and one variable that’s not unexpected.</p>
+<p>The basic problem with overdispersion when using Poisson regression is that you only have one free parameter. Your variance and mean cannot be adjusted independently due to assumptions of the model, but in practice, this assumption is often unrealistic. A common method of dealing with this is to use something called a Poisson mixture model. This allows for greater variability in the rate parameter (we now have 2 free parameters instead of 1) and should provide a better fit to the data. A negative binomial regression model is fit in the same way as the Poisson regression model.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>fit.nb <span class="ot">&lt;-</span> MASS<span class="sc">::</span><span class="fu">glm.nb</span>(count<span class="sc">~</span>year, <span class="at">data =</span> df)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit.nb)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+MASS::glm.nb(formula = count ~ year, data = df, init.theta = 384.1695951, 
+    link = log)
+
+Coefficients:
+             Estimate Std. Error z value Pr(&gt;|z|)
+(Intercept) -6.000226   8.999152  -0.667    0.505
+year         0.007087   0.004476   1.583    0.113
+
+(Dispersion parameter for Negative Binomial(384.1696) family taken to be 1)
+
+    Null deviance: 14.574  on 11  degrees of freedom
+Residual deviance: 12.004  on 10  degrees of freedom
+AIC: 167.71
+
+Number of Fisher Scoring iterations: 1
+
+              Theta:  384 
+          Std. Err.:  173 
+
+ 2 x log-likelihood:  -161.714 </code></pre>
+</div>
+</div>
+<p>Our rate parameter is now a much more reasonable 1.2, but this doesn’t automatically make our model good. This is still an incredibly simple model that is missing all sorts of complexity from our full data set. With that said, the revised model doesn’t show year as a significant variable. It doesn’t appear that year alone can accurately predict the yearly violent crime totals. This should not be surprising. The p-value of 0.113 does indicate to me that there is <em>some</em> sort of relationship, however. My guess is that it’s hidden within some other variables. Maybe year alone doesn’t predict the count very well, but perhaps something like knowing the month and year does a better job.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/regression-plot-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Yearly Crime Count With Regression Line</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>When you look at Fig.2, you see that the negative binomial fit line captures the trend OK, but is way off for several data points. 2007, 2010, and 2016 are all well off the predicted amounts, but that’s not terribly surprising given how simple the model is. Our simple negative binomial model with just the year variable isn’t showing year as a significant predictor because with such a small sample and only one variable we just can’t adequately fit the data.</p>
+<p>If we add in another variable–something like months–then you see a different result.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a df with violent crimes counts grouped by year and month</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>df2<span class="ot">&lt;-</span> crime_lou<span class="sc">%&gt;%</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(nibrs_code <span class="sc">==</span> <span class="st">'13a'</span><span class="sc">|</span>nibrs_code <span class="sc">==</span> <span class="st">'120'</span><span class="sc">|</span>nibrs_code <span class="sc">==</span> <span class="st">'09a'</span><span class="sc">|</span>nibrs_code <span class="sc">==</span> <span class="st">'11a'</span>)<span class="sc">%&gt;%</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">month =</span> <span class="fu">factor</span>(month, <span class="at">ordered =</span> <span class="cn">FALSE</span>))<span class="sc">%&gt;%</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(month, year)<span class="sc">%&gt;%</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">count =</span> <span class="fu">n</span>())</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>fit.nb2 <span class="ot">&lt;-</span> MASS<span class="sc">::</span><span class="fu">glm.nb</span>(count <span class="sc">~</span> year <span class="sc">+</span> month, <span class="at">data =</span> df2)</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit.nb2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+MASS::glm.nb(formula = count ~ year + month, data = df2, init.theta = 219.2979455, 
+    link = log)
+
+Coefficients:
+             Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept) -8.712413   4.265533  -2.043 0.041100 *  
+year         0.007184   0.002122   3.386 0.000709 ***
+monthFeb    -0.281920   0.037273  -7.564 3.92e-14 ***
+monthMar    -0.033416   0.036199  -0.923 0.355954    
+monthApr     0.010055   0.036034   0.279 0.780220    
+monthMay     0.128107   0.035618   3.597 0.000322 ***
+monthJun     0.087726   0.035756   2.453 0.014148 *  
+monthJul     0.127497   0.035620   3.579 0.000344 ***
+monthAug     0.132143   0.035605   3.711 0.000206 ***
+monthSep     0.058564   0.035858   1.633 0.102421    
+monthOct     0.085018   0.035765   2.377 0.017447 *  
+monthNov    -0.004266   0.036088  -0.118 0.905896    
+monthDec     0.017126   0.036008   0.476 0.634347    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for Negative Binomial(219.2979) family taken to be 1)
+
+    Null deviance: 356.08  on 143  degrees of freedom
+Residual deviance: 144.08  on 131  degrees of freedom
+AIC: 1394
+
+Number of Fisher Scoring iterations: 1
+
+              Theta:  219.3 
+          Std. Err.:  43.7 
+
+ 2 x log-likelihood:  -1366.02 </code></pre>
+</div>
+</div>
+<p>The addition of month as a variable completely changes the significance of the year variable. Year now shows as a significant predictor with a p-value of 0.001. What this likely means is that year alone isn’t specific enough a variable to accurately predict counts. When you combine the year and month variables to get something like January + 2016 as a set of variables, that year portion ends up having much more predictive power.</p>
+<p>So what does all this regression talk mean when thinking back to my original question–did 2016 have significantly higher violent crime than past years? If we look at the predicted crime counts as indicated by the fit line, it would seem that 2016 was significantly outside the norm. The fact the 2014 and 2015 numbers fall much closer to the fit line also indicates to me that part of the reason 2016 is faring so poorly when compared to the previous year is that the previous year was a very standard year for crime. As you can see from the plot in Fig.2, the total number of violent crimes per year varies a great deal. There is a clear, worrying, upward trend, but it is difficult to predict exactly how bad a year is going to be.</p>
+<p>With all that said, after performing a Poisson means test, simulating 2016 data, and fitting Poisson and negative binomial regression models, I feel more at ease declaring that 2016 had unusually high violent crime. Modeling is a very subtle field. It is tricky to know exactly how to approach a problem. When you are unsure it’s easy to fall into the trap of taking the test results as law even when the test might not be appropriate! As with most things in life, a responsible data scientist should always question their assumptions and be prepared to laugh when we fail miserably.</p>
+</section>
+<section id="update" class="level3">
+<h3 class="anchored" data-anchor-id="update">2017 Update!</h3>
+<p>Right as I was finishing this post, 2018 rolled around and with it another full year of crime data became available to me!</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/2017-update-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Yearly Violent Crime Breakdown</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>A quick plot of the data shows that violent crime was down in 2017 by about 10%. A quick Poisson test for 2016 and 2017 data indicates that the 2017 drop is significant enough to reject the null hypothesis that 2017’s lambda rate is the same as 2016’s. Essentially, we saw a significant drop in violent crime in 2017.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Comparison of Poisson rates
+
+data:  c(year_sums_updated$count[1], year_sums_updated$count[2]) time base: c(1, 1)
+count1 = 4307, expected count1 = 4090, p-value = 1.68e-06
+alternative hypothesis: true rate ratio is not equal to 1
+95 percent confidence interval:
+ 1.064576 1.161686
+sample estimates:
+rate ratio 
+  1.112058 </code></pre>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>poisson_sim <span class="ot">&lt;-</span> <span class="cf">function</span>(){</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  sim_val <span class="ot">&lt;-</span> <span class="fu">rpois</span>(<span class="dv">1</span>, <span class="at">lambda =</span> year_sums_updated<span class="sc">$</span>count[<span class="dv">1</span>]) <span class="co"># draw one sample from a poisson distribution with lambda equal to 2016 total</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(sim_val)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">replicate</span>(<span class="dv">10000</span>, <span class="fu">poisson_sim</span>()) <span class="co"># perform this simulation 10000 times and store the p_values</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>When we simulate 2017 data with 10,000 draws, the minimum number of crimes we see using 2016’s rate as the lambda parameter is 4074. Even after running this simulation several times, I never see any draws below 4000. This yet again indicates how unlikely it is that 2017 isn’t a significant drop from 2016.</p>
+</section>
+<section id="conclusions" class="level3">
+<h3 class="anchored" data-anchor-id="conclusions">Conclusions</h3>
+<p>After further analysis, it appears that 2016 really was an exceptionally bad year for violent crime. Visual inspection, Poisson means, Monte Carlo simulation, and Poisson regression all indicate that the 2016 data fell outside the expected norm for violent crime. As a positive addendum to this news, the late addition of 2017 crime data allowed me to analyze 2017’s crime data in a similar manner and determine that 2017 saw a significant drop in violent crime. Examining Fig.3, it’s easy to see that violent crime ebbs and flows in our city. The terrific highs of 2016 were replaced by a return to normalcy in 2017. Sadly, we are going to continue to see these peak years, but I’m not sure focusing on one exceptionally poor year is the proper way to address this issue. Louisville’s violent crime is trending up. Focusing on isolated years leads to reactionary politics and rash policies. Louisville’s leadership needs to dig in and focus on foundational changes that can be made to turn the troubling upward trend around.</p>
+<p>This post ended up being considerably more illustrative than I thought it would. The challenges and nuances present in modeling even simple problems all reared their heads in this post. Statistics is a broad and deep field, and knowing what direction to head is often half the battle. In this case, the deceptively challenging question ‘Is this change a significant one?’ presented a number of sub-questions. At what aggregation level do I need to examine the data? How do I best model the violent crime distribution? Is modeling the distribution even the correct approach–maybe I should use simulations to see how likely this result was? How about using a chi-squared test to see if 2016’s rates are what we would expect? These and many more questions all popped up during this seemingly benign analysis. This sort of wrangling is exciting and challenging to deal with as a practitioner of data science, but we have to be constantly vigilant while doing our analysis. Mindlessly applying tests can easily lead to completely backward conclusions and the temptation to blindly trust these powerful methods is strong. Statistics is a powerful tool, but great care must be taken when applying it’s methods as it’s incredibly easy to mislead people with your findings–whether you intend to or not.</p>
+<p>Until next time!</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

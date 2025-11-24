@@ -1,0 +1,92 @@
+{
+  "index.qmd": {
+    "index.html": "39f10197"
+  },
+  "about.qmd": {
+    "about.html": "217f8d00"
+  },
+  "posts/post-with-code/index.qmd": {
+    "index.html": "954df2ff"
+  },
+  "posts/welcome/index.qmd": {
+    "index.html": "61d35011"
+  },
+  "posts/investment-simulation/index.qmd": {
+    "index.html": "d9e2ef57"
+  },
+  "posts/visualizing-how-often-i-see-my-siblings-with-waffle-plot-s/index.Rmd": {
+    "index.html": "e8120fe9"
+  },
+  "posts/visualizing-how-often-i-see-my-siblings-with-waffle-plot-s/index.qmd": {
+    "index.html": "79cd22f5"
+  },
+  "posts/tidy-tuesday-how-much-does-it-rain-in-australia-with-gifs/index.Rmd": {
+    "index.html": "ce698061"
+  },
+  "posts/tidy-tuesday-how-much-does-it-rain-in-australia-with-gifs/index.qmd": {
+    "index.html": "b6945502"
+  },
+  "posts/beer-advocate-reviews/index.Rmd": {
+    "index.html": "ce341b7f"
+  },
+  "posts/beer-advocate-reviews/index.qmd": {
+    "index.html": "8ad1a19a"
+  },
+  "posts/how-to-deploy-a-keras-model-who-knows-let-s-find-out/index.Rmd": {
+    "index.html": "d1adf8b5"
+  },
+  "posts/how-to-deploy-a-keras-model-who-knows-let-s-find-out/index.qmd": {
+    "index.html": "62fe0391"
+  },
+  "posts/predicting-yelp-ratings-from-review-text/index.qmd": {
+    "index.html": "34a8f1fc"
+  },
+  "posts/the-tables-turn-reviewing-yelp/index.Rmd": {
+    "index.html": "a30685da"
+  },
+  "posts/the-tables-turn-reviewing-yelp/index.qmd": {
+    "index.html": "a23aca8e"
+  },
+  "posts/a-python-post/index.qmd": {
+    "index.html": "0129f2dd"
+  },
+  "posts/text-analysis-of-presidential-news-articles/index.Rmd": {
+    "index.html": "cf7f8644"
+  },
+  "posts/text-analysis-of-presidential-news-articles/index.qmd": {
+    "index.html": "64e11967"
+  },
+  "posts/to-classify-or-not-to-classify/index.Rmd": {
+    "index.html": "7a5cbc3c"
+  },
+  "posts/to-classify-or-not-to-classify/index.qmd": {
+    "index.html": "66f22711"
+  },
+  "posts/violent-crime-revisited/index.Rmd": {
+    "index.html": "07f26728"
+  },
+  "posts/violent-crime-revisited/index.qmd": {
+    "index.html": "409ce062"
+  },
+  "posts/a-forecasters-folly/index.Rmd": {
+    "index.html": "e86d6fd8"
+  },
+  "posts/a-forecasters-folly/index.qmd": {
+    "index.html": "480f4ba2"
+  },
+  "posts/is-theft-in-louisville-rising/index.Rmd": {
+    "index.html": "ec162d4f"
+  },
+  "posts/exploring-violent-crime-in-louisville/index.Rmd": {
+    "index.html": "f4269de8"
+  },
+  "posts/louisville-s-heroin-epidemic/index.Rmd": {
+    "index.html": "eea5cc97"
+  },
+  "posts/louisville-s-heroin-epidemic/index.qmd": {
+    "index.html": "d8532ad1"
+  },
+  "posts/seattle-library-analysis/index.qmd": {
+    "index.html": "8f958bed"
+  }
+}

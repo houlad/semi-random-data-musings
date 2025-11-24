@@ -1,0 +1,16 @@
+---
+title: Predicting Yelp Ratings from Review Text
+author: Adam
+date: '2018-04-23'
+slug: predicting-yelp-ratings-from-review-text
+categories:
+  - Python
+  - classification
+  - machine learning
+  - python
+  - text analysis
+---
+
+Hello again! If you've been following along you'll know that I'm in the middle of a series of posts digging through Yelp review data. Last time I went through some exploratory analysis of Yelp reviews and tried to get an understanding of the text that goes into them. My followup is to build a model to predict those Yelp ratings from the review text itself. Unfortunately, I did this building in Python so I ended up putting it on Kaggle instead of directly on my R site. Luckily, it's just a [single click away](https://www.kaggle.com/athoul01/predicting-yelp-ratings-from-review-text/notebook)! So if you are curious about building a neural network NLP model to predict Yelp reviews, head on over and take a look.
+
+Up next I'll take on deploying this Keras model.

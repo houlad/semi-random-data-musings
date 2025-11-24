@@ -1,0 +1,2607 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.40">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Adam">
+<meta name="dcterms.date" content="2019-03-11">
+
+<title>Analysis of Beer Advocate Dataset: Walkthrough of a data science take-home interview test – Semi-Random Data Musings</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-f33991cf3c59b7de71e019b8ce5d8602.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed fullcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Semi-Random Data Musings</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/houlad"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://mastodon.social/@adam_houl"> <i class="bi bi-mastodon" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Analysis of Beer Advocate Dataset: Walkthrough of a data science take-home interview test</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">R</div>
+                <div class="quarto-category">data visualization</div>
+                <div class="quarto-category">machine learning</div>
+                <div class="quarto-category">recommender systems</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Adam </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">March 11, 2019</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+
+<p>Interviewing for data science jobs is hard. Since the job definition and responsibilities vary significantly between companies and roles, you never quite know what areas of the field you’ll be asked about during an interview. This is stressful for the interviewee and can result in misleading results for the interviewer.</p>
+<p>A while back I stumbled on a great <a href="https://www.linkedin.com/pulse/how-hire-test-data-skills-one-size-fits-all-interview-tanya-cashorali/">blog post</a> by Tanya Cashorali where she goes into detail about why she’s taken to using a take-home ‘test’ to evaluate potential data scientists. She even lays out a test dataset and problems for interviews.</p>
+<p>I loved her take on how bad many data science interviews are and I thought it would be great practice(and maybe useful for anyone who stumbles upon this post!) to work through the test she lays out. The test she proposes is simple, but can be answered on a variety of levels depending on the candidates experience. Using a dataset from the popular beer(yay beer!) review website Beer Advocate, you need to answer four analytics questions and communicate your findings:</p>
+<ol type="1">
+<li>Which brewery produces the strongest beers by ABV?</li>
+<li>If you had to pick 3 beers to recommend using only this data, which would you pick?</li>
+<li>Which of the factors(aroma, taste, appearance, palette) are most important in determining the overall quality of a beer?</li>
+<li>If I typically enjoy a beer due to its aroma and appearance, which beer style should I try?</li>
+</ol>
+<p>This is a really exciting dataset as a beer lover, so without further ado, let’s dive in!<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<section id="data-exploration" class="level2">
+<h2 class="anchored" data-anchor-id="data-exploration">Data Exploration</h2>
+<p>I always need to get a feel for the dataset before doing any sort of analysis. With 1,586,614 reviews, the dataset is large enough that I can’t just glance at it and understand it, but small enough that I don’t have to worry about using fancy techniques to speed things up–just load the data into R and start exploring!</p>
+<p>First, I’d like to know a bit about who’s represented in the dataset. There are 5,840 distinct breweries and 66,055 distinct beers represented. The breweries with the most reviews are pretty familiar–Sam Adams, Sierra Nevada, Dogfish, Bells– but where are the ‘macro’ breweries? It seems that the beer advocate dataset is a picture of the craft brew beer scene and won’t necessarily be representative of all beer drinkers. I guess you have to be pretty ‘in’ to beer to post reviews online and find your way into this dataset. The big 3 American macro-breweries (Anheuser, Millers and Coors) <em>are</em> present in the data<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>, but not sitting at the top with the most reviews like you might expect from the breweries that sell the most beer by <a href="https://www.forbes.com/sites/garystoller/2018/03/20/craft-breweries-dominate-the-top-50-but-guess-which-giants-rule-the-beer-market/#3c5064e6dcad">volume</a>. This isn’t particularly important for the questions being asked here, but it’s good to identify biases in your dataset as you recognize them–this dataset is <em>definitely</em> not representative of the beer drinking population as a whole!</p>
+<section id="most-reviewed-breweries" class="level3">
+<h3 class="anchored" data-anchor-id="most-reviewed-breweries">Most Reviewed Breweries</h3>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<table class="table table-condensed">
+<thead>
+<tr>
+<th style="text-align:right;">
+brewery_name
+</th>
+<th style="text-align:right;">
+n
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+Boston Beer Company (Samuel Adams)
+</td>
+<td style="text-align:right;">
+39444
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Dogfish Head Brewery
+</td>
+<td style="text-align:right;">
+33839
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Stone Brewing Co.&nbsp;
+</td>
+<td style="text-align:right;">
+33066
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Sierra Nevada Brewing Co.&nbsp;
+</td>
+<td style="text-align:right;">
+28751
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Bell’s Brewery, Inc.&nbsp;
+</td>
+<td style="text-align:right;">
+25191
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Rogue Ales
+</td>
+<td style="text-align:right;">
+24083
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Founders Brewing Company
+</td>
+<td style="text-align:right;">
+20004
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Victory Brewing Company
+</td>
+<td style="text-align:right;">
+19479
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="most-reviewed-beers" class="level3">
+<h3 class="anchored" data-anchor-id="most-reviewed-beers">Most Reviewed Beers</h3>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<table class="table table-condensed">
+<thead>
+<tr>
+<th style="text-align:right;">
+beer_name
+</th>
+<th style="text-align:right;">
+brewery_name
+</th>
+<th style="text-align:right;">
+n
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+90 Minute IPA
+</td>
+<td style="text-align:right;">
+Dogfish Head Brewery
+</td>
+<td style="text-align:right;">
+3290
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Old Rasputin Russian Imperial Stout
+</td>
+<td style="text-align:right;">
+North Coast Brewing Co.&nbsp;
+</td>
+<td style="text-align:right;">
+3111
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Sierra Nevada Celebration Ale
+</td>
+<td style="text-align:right;">
+Sierra Nevada Brewing Co.&nbsp;
+</td>
+<td style="text-align:right;">
+3000
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Two Hearted Ale
+</td>
+<td style="text-align:right;">
+Bell’s Brewery, Inc.&nbsp;
+</td>
+<td style="text-align:right;">
+2728
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Arrogant Bastard Ale
+</td>
+<td style="text-align:right;">
+Stone Brewing Co.&nbsp;
+</td>
+<td style="text-align:right;">
+2704
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Stone Ruination IPA
+</td>
+<td style="text-align:right;">
+Stone Brewing Co.&nbsp;
+</td>
+<td style="text-align:right;">
+2704
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Sierra Nevada Pale Ale
+</td>
+<td style="text-align:right;">
+Sierra Nevada Brewing Co.&nbsp;
+</td>
+<td style="text-align:right;">
+2587
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Stone IPA (India Pale Ale)
+</td>
+<td style="text-align:right;">
+Stone Brewing Co.&nbsp;
+</td>
+<td style="text-align:right;">
+2575
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Second, I want to know how many reviews beers typically get. If I’m going to recommend beers, it’s probably not a great idea to recommend a beer that’s only been reviewed 1 time–even if it got a perfect review. Similarly, saying a brewery produces the strongest beers by ABV probably means two different things if one brewery makes 15 different beers while the other only makes 1. This gets to the issue of thresholding–at what level do I need to exclude reviews/beers/breweries for not having enough data to give a reasonable answer?</p>
+</section>
+<section id="how-many-reviews-do-beers-receive" class="level3">
+<h3 class="anchored" data-anchor-id="how-many-reviews-do-beers-receive">How Many Reviews do Beers Receive?</h3>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create df of how many reviews each unique beer has gotten</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>reviews_per_beer <span class="ot">&lt;-</span> reviews_raw <span class="sc">%&gt;%</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(beer_beerid, beer_name, <span class="at">sort =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># create df of mean and median for easy plot labeling</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>review_measures <span class="ot">&lt;-</span> reviews_per_beer <span class="sc">%&gt;%</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">Mean =</span> <span class="fu">round</span>(<span class="fu">mean</span>(n)),</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">Median =</span> <span class="fu">median</span>(n))<span class="sc">%&gt;%</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># gather makes it a tidy df so I can easily get legend labels</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gather</span>()</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># create plot</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>reviews_per_beer <span class="sc">%&gt;%</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(n))<span class="sc">+</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># I like this blue</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">fill =</span> <span class="st">"#0072B2"</span>, <span class="at">color =</span> <span class="st">'white'</span>, <span class="at">alpha =</span> .<span class="dv">8</span>)<span class="sc">+</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># log scale to have an interpretable plot--most beers get very few reviews</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_log10</span>()<span class="sc">+</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  <span class="co"># use review_measures to add mean/median lines to plot</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">data =</span> review_measures,</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>             <span class="fu">aes</span>(<span class="at">xintercept =</span> value, <span class="at">color =</span> key),</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>             <span class="at">lty =</span> <span class="dv">2</span>,</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>             <span class="at">size =</span> .<span class="dv">9</span>)<span class="sc">+</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>  <span class="co"># adjust y axis limits for 'better' looking graph</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">25000</span>),</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>                     <span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>),</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>                     <span class="at">labels =</span> <span class="fu">comma_format</span>())<span class="sc">+</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="fu">c</span>(.<span class="dv">75</span>, .<span class="dv">87</span>))<span class="sc">+</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"# of Reviews"</span>,</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"# of Beers"</span>,</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"How many reviews do beers get?"</span>,</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"~80% of beers receive 10 or fewer reviews"</span>,</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">""</span>)<span class="sc">+</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">my_theme_tweaks</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/review-counts-1.png" class="quarto-figure quarto-figure-center figure-img" style="width:90.0%;height:90.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>It turns out that most beers get <em>very</em> few reviews. Median reviews for a beer is just 2, but the mean, 24, is heavily pushed to the right by the very popular beers in the right tail of the distribution.</p>
+</section>
+<section id="how-many-beers-do-breweries-produce" class="level3">
+<h3 class="anchored" data-anchor-id="how-many-beers-do-breweries-produce">How Many Beers do Breweries Produce?</h3>
+<p>It’s also going to be helpful to know how many distinct beers a typical brewery produces.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/beer-produced-by-breweries-1.png" class="quarto-figure quarto-figure-center figure-img" style="width:90.0%;height:90.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Using very similar <a href="https://gist.github.com/houlad/c6c911b5bf3ddb9c0178f9265a81e42f">code</a> to that used above, I can see that 20% of breweries only make one beer! The mean number of beers a brewery produces is just 9 with a median of 4. So for the most part, breweries aren’t producing(or at least people aren’t reviewing) <em>that</em> many different beers. This will need to be dealt with when deciding how many beers is ‘enough’ to include a brewery in the highest ABV brewery question.</p>
+</section>
+<section id="does-the-style-of-beer-matter-you-bet-it-does" class="level3">
+<h3 class="anchored" data-anchor-id="does-the-style-of-beer-matter-you-bet-it-does">Does the Style of Beer Matter? You Bet it Does!</h3>
+<p>As a final exploratory question, I want to examine how the different styles of beer fare. Are some considerably more popular? Are some just better? Are some styles really consistent–ie you see very little variance in how it’s rated? I really have no idea, but knowing a bit more about beer styles will be helpful when recommending a beer style in question four.</p>
+<p>First, there are 104 different styles of beer represented in the dataset. As you can see, several styles are <strong>really</strong> popular, while others are quite uncommon.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<table class="table table-condensed">
+<thead>
+<tr>
+<th style="text-align:right;">
+beer_style
+</th>
+<th style="text-align:right;">
+n
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+American IPA
+</td>
+<td style="text-align:right;">
+117586
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+American Double / Imperial IPA
+</td>
+<td style="text-align:right;">
+85977
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+American Pale Ale (APA)
+</td>
+<td style="text-align:right;">
+63469
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Russian Imperial Stout
+</td>
+<td style="text-align:right;">
+54129
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+American Double / Imperial Stout
+</td>
+<td style="text-align:right;">
+50705
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cell-output-display">
+<table class="table table-condensed">
+<thead>
+<tr>
+<th style="text-align:right;">
+beer_style
+</th>
+<th style="text-align:right;">
+n
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+Happoshu
+</td>
+<td style="text-align:right;">
+241
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Kvass
+</td>
+<td style="text-align:right;">
+297
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Roggenbier
+</td>
+<td style="text-align:right;">
+466
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Faro
+</td>
+<td style="text-align:right;">
+609
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Gose
+</td>
+<td style="text-align:right;">
+686
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>I think it could be useful to know how beer style and overall review score interact. Knowing a little bit about beer, I could see a situation where one style–let’s say Quadrupels(Quads)–are always highly rated, but another–maybe American Lagers–are generally rated very low. Just knowing the style of a beer might give us a lot of information about how that beer is going to be reviewed.</p>
+<p>Looking at the top 5 and bottom 5 scoring styles, it’s pretty shocking how different their average scores are. Is it really that difficult to make a delicious Light Lager? Or on the flip side, are Quads that easy to make–or do humans just love the taste of them? Who knows, but I know I want to dive a tiny bit deeper to see how much variance there is in the reviews of each style of beer. Maybe it’s possible to get a good Light Lager, but there are a host of bad ones out there dragging down the average score. Also, remember what we discovered above– this dataset isn’t at all representative of the general beer drinking population. If we had reviews from that population, I suspect the average scores of beer styles would look very different.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<table class="table table-condensed">
+<thead>
+<tr>
+<th style="text-align:right;">
+beer_style
+</th>
+<th style="text-align:right;">
+avg_score
+</th>
+<th style="text-align:right;">
+reviews
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+American Wild Ale
+</td>
+<td style="text-align:right;">
+4.093262
+</td>
+<td style="text-align:right;">
+17794
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Gueuze
+</td>
+<td style="text-align:right;">
+4.086287
+</td>
+<td style="text-align:right;">
+6009
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Quadrupel (Quad)
+</td>
+<td style="text-align:right;">
+4.071630
+</td>
+<td style="text-align:right;">
+18086
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Lambic - Unblended
+</td>
+<td style="text-align:right;">
+4.048923
+</td>
+<td style="text-align:right;">
+1114
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+American Double / Imperial Stout
+</td>
+<td style="text-align:right;">
+4.029820
+</td>
+<td style="text-align:right;">
+50705
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Happoshu
+</td>
+<td style="text-align:right;">
+2.914938
+</td>
+<td style="text-align:right;">
+241
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Euro Strong Lager
+</td>
+<td style="text-align:right;">
+2.862518
+</td>
+<td style="text-align:right;">
+2724
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Light Lager
+</td>
+<td style="text-align:right;">
+2.698833
+</td>
+<td style="text-align:right;">
+14311
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+American Malt Liquor
+</td>
+<td style="text-align:right;">
+2.678854
+</td>
+<td style="text-align:right;">
+3925
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Low Alcohol Beer
+</td>
+<td style="text-align:right;">
+2.578268
+</td>
+<td style="text-align:right;">
+1201
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="overall-review-scores-for-different-beer-styles-how-much-do-they-vary" class="level3">
+<h3 class="anchored" data-anchor-id="overall-review-scores-for-different-beer-styles-how-much-do-they-vary">Overall review scores for different beer styles: How much do they vary?</h3>
+<p>I can generate confidence intervals to see how much variance there is in the scores of different styles of beer. There are a couple different ways to approach this–mainly related to how you decide to group–and each have their advantages so I include both here.</p>
+<section id="filter-then-filter-again-styles-that-have-30-different-beers-that-had-at-least-30-reviews" class="level4">
+<h4 class="anchored" data-anchor-id="filter-then-filter-again-styles-that-have-30-different-beers-that-had-at-least-30-reviews">Filter, then filter again! Styles that have 30 different beers that had at least 30 reviews</h4>
+<p>The first approach groups by unique beers and then style. So, for example, beer 1904 is an American IPA that has 3000 reviews and an average score of ~4.17. Once I have this information, I can generate confidence intervals, but I need to deal with the tricky question of what beers to include in the calculations. If a beer is only reviewed 1 time, should it be included? What about if a beer style only has 15 different beers to it’s name? In order to get a good estimation of both the point estimate and the confidence intervals, I need to have enough data about each beer, otherwise it could be that only one person reviewed a beer and they just had a terrible day and unjustly gave it 1 star–and then are skewing our analysis here.</p>
+<p>It’s definitely a judgement call how to filter here, but I want to feel confident my intervals are meaningful. I’m only keeping beers that have &gt;= 30 reviews(about 7100), then I count how many beers of each style remain and I’m filtering again to keep only those styles with at least 30 beers–so each style that remains has at least 30 different beers that had at least 30 reviews.</p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># This first approach groups by the unique beers and styles--so it averages</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># the score of each individual beer and then our final estimates are an average of </span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># all the unique beers in that beer style. This gives relatively more weight to beers with</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># fewer reviews</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Have to group differently to show conf intervals for scores of beer styles</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>by_beerid <span class="ot">&lt;-</span> reviews_raw <span class="sc">%&gt;%</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(beer_beerid, beer_style)<span class="sc">%&gt;%</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">reviews =</span> <span class="fu">n</span>(),</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>            <span class="at">avg_score =</span> <span class="fu">mean</span>(review_overall))<span class="sc">%&gt;%</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()<span class="sc">%&gt;%</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(reviews))</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co"># generate confidence intervals for styles of beer</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>beer_style_conf_int <span class="ot">&lt;-</span> by_beerid<span class="sc">%&gt;%</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># filter to beers with at least 30 reviews- leaves us with 7174 different beers</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(reviews <span class="sc">&gt;=</span> <span class="dv">30</span>)<span class="sc">%&gt;%</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>  <span class="co"># count how many beers of each style remain</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_count</span>(beer_style)<span class="sc">%&gt;%</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  <span class="co"># filter again to keep styles with at least 30 different beers remaining</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(n <span class="sc">&gt;=</span> <span class="dv">30</span>)<span class="sc">%&gt;%</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>  <span class="co"># creates nested list column for each beer style with each beer included, it's average score</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>  <span class="co"># and the total number of beers of that style</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nest</span>(<span class="sc">-</span>beer_style)<span class="sc">%&gt;%</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>  <span class="co"># use this list to do a t.test and create a confidence interval for each beer style</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">model =</span> <span class="fu">map</span>(data , <span class="sc">~</span><span class="fu">t.test</span>(.<span class="sc">$</span>avg_score)),</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>         <span class="at">tidy_model =</span> <span class="fu">map</span>(model, tidy))<span class="sc">%&gt;%</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(tidy_model)<span class="sc">%&gt;%</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>data, <span class="sc">-</span>model)</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a><span class="co"># extract top 15 and bottom 15 styles</span></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>top_15 <span class="ot">&lt;-</span> beer_style_conf_int<span class="sc">%&gt;%</span></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">top_n</span>(<span class="dv">15</span>, estimate)</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>bottom_15 <span class="ot">&lt;-</span> beer_style_conf_int<span class="sc">%&gt;%</span></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">top_n</span>(<span class="sc">-</span><span class="dv">15</span>, estimate)</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a><span class="co"># bind to one df(this seems really convoluted way of doing this)</span></span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>top_bottom_conf_int <span class="ot">&lt;-</span></span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(top_15, bottom_15)</span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>top_bottom_conf_int<span class="sc">%&gt;%</span></span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>  <span class="co"># reorder beers by estimated overall score</span></span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">beer_style =</span> <span class="fu">fct_reorder</span>(beer_style, estimate))<span class="sc">%&gt;%</span></span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(estimate, beer_style))<span class="sc">+</span></span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()<span class="sc">+</span></span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>  <span class="co"># errorbarh creates the 'tiefighter' style graph I like for confidence intervals</span></span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbarh</span>(<span class="fu">aes</span>(<span class="at">xmin =</span> conf.low,</span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>                     <span class="at">xmax =</span> conf.high))<span class="sc">+</span></span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fl">15.5</span>, <span class="at">linetype =</span> <span class="dv">2</span>, <span class="at">color =</span> <span class="st">"#0072B2"</span>)<span class="sc">+</span></span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="at">data =</span> <span class="fu">data.frame</span>(),</span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a>            <span class="fu">aes</span>(<span class="at">x =</span> <span class="fl">2.5</span>,</span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a>                <span class="at">y =</span> <span class="st">"Old Ale"</span>,</span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>                <span class="at">label =</span> <span class="st">"Top Styles"</span>),</span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>            <span class="at">fontface =</span> <span class="st">"italic"</span>,</span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>            <span class="at">size =</span> <span class="fl">2.5</span>)<span class="sc">+</span></span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="at">data =</span> <span class="fu">data.frame</span>(),</span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a>            <span class="fu">aes</span>(<span class="at">x =</span> <span class="fl">2.5</span>,</span>
+<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a>                <span class="at">y =</span> <span class="st">"English Pale Ale"</span>,</span>
+<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a>                <span class="at">label =</span> <span class="st">"Bottom Styles"</span>),</span>
+<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a>            <span class="at">fontface =</span> <span class="st">"italic"</span>,</span>
+<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a>            <span class="at">size =</span> <span class="fl">2.5</span>)<span class="sc">+</span></span>
+<span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Overall Review Score"</span>,</span>
+<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">""</span>,</span>
+<span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Top 15 and Bottom 15 Beer Styles"</span>,</span>
+<span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Estimated Review Score of Beer Styles with 95% Confidence Intervals"</span>)<span class="sc">+</span></span>
+<span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a>  <span class="fu">my_theme_tweaks</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/filtered-styles-conf-int-1.png" class="quarto-figure quarto-figure-center figure-img" style="width:90.0%;height:90.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The top styles here don’t surprise me, but it’s very interesting to see which styles are more variable than others. If you were to pick a random Imperial Stout/Barleywine/American IPA, you could be pretty confident you know exactly how good of a beer you are going to get. But if you pick something like a Gueuze or Old Ale, there’s a bit more variation in how ‘good’ the beer is–it could be the best beer you’ve ever had or it could be OK.</p>
+<p>The bottom portion of the style list is interesting not for the styles on it, but for the little bit of extra variance. Many of these styles have confidence intervals .2-.3 points wide, whereas the top styles were rarely over .1 points wide. Euro Dark Lager, for example, have a 95% confidence interval from 3.34 - 3.63. To me, this means that Euro Dark Lagers aren’t inherently bad beers, but when you order one you aren’t really sure if you are getting a good beer or one not worth drinking. Simply put, there’s a little more variance in the reviews of that style of beer.</p>
+</section>
+<section id="keep-all-the-beerswithin-reason" class="level4">
+<h4 class="anchored" data-anchor-id="keep-all-the-beerswithin-reason">Keep all the beers–within reason!</h4>
+<p>The filtering approach above has a clear bias. Only beers–and beer styles– that are popular are included in the final results. There are good reasons for filtering out those beers, but we definitely lose a lot of beers in the process–some 59,272. Another approach that doesn’t remove so many beers is to stop filtering out individual beers with very few reviews and instead to treat beers as members of a beer style family. So instead of removing all those beers with, say, 1 or 2 reviews, I say ‘This Pale Ale only has 1 review, but it’s still a Pale Ale, so let’s treat it like one’. I still do a quick filter to make sure no style has fewer than 30 reviews(spoiler: none do!) and then plot the results with confidence intervals.</p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># This approach creates a unique id for each review(since there isn't one in the dataset)</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># and then it groups by beer style. This means I keep all individual reviews, but those</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># unique beers with very few reviews aren't present as much so they don't get a lot of weight. </span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Assign a unique identifier to each review first</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># This seems like a really clunky way of doing this, so I am probably missing a much simpler way.</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>by_reviewid <span class="ot">&lt;-</span> reviews_raw <span class="sc">%&gt;%</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">unique_id =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(reviews_raw))<span class="sc">%&gt;%</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">avg_score =</span> review_overall)<span class="sc">%&gt;%</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(unique_id, beer_style, avg_score, beer_beerid)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co"># generate the conf intervals on the reviewid data</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>beer_style_conf_int_by_reviewid <span class="ot">&lt;-</span> by_reviewid<span class="sc">%&gt;%</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_count</span>(beer_style)<span class="sc">%&gt;%</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># filters to beers styles with at least 30 reviews</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(n <span class="sc">&gt;=</span><span class="dv">30</span>)<span class="sc">%&gt;%</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nest</span>(<span class="sc">-</span>beer_style)<span class="sc">%&gt;%</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">model =</span> <span class="fu">map</span>(data, <span class="sc">~</span><span class="fu">t.test</span>(.<span class="sc">$</span>avg_score)),</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>         <span class="at">tidy_model =</span> <span class="fu">map</span>(model, tidy))<span class="sc">%&gt;%</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(tidy_model)</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="co"># extract top 15 and bottom 15 styles</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>top_15_by_reviewid <span class="ot">&lt;-</span> beer_style_conf_int_by_reviewid<span class="sc">%&gt;%</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">top_n</span>(<span class="dv">15</span>, estimate)</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>bottom_15_by_reviewid <span class="ot">&lt;-</span> beer_style_conf_int_by_reviewid<span class="sc">%&gt;%</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">top_n</span>(<span class="sc">-</span><span class="dv">15</span>, estimate)</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="co"># bind to one df(this seems really convoluted way of doing this)</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>top_bottom_conf_int_by_reviewid <span class="ot">&lt;-</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(top_15_by_reviewid, bottom_15_by_reviewid)</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a><span class="co"># create plot</span></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>top_bottom_conf_int_by_reviewid<span class="sc">%&gt;%</span></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">beer_style =</span> <span class="fu">fct_reorder</span>(beer_style, estimate))<span class="sc">%&gt;%</span></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(estimate, beer_style))<span class="sc">+</span></span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()<span class="sc">+</span></span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbarh</span>(<span class="fu">aes</span>(<span class="at">xmin =</span> conf.low,</span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>                     <span class="at">xmax =</span> conf.high))<span class="sc">+</span></span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fl">15.5</span>, <span class="at">linetype =</span> <span class="dv">2</span>, <span class="at">color =</span> <span class="st">"#0072B2"</span>)<span class="sc">+</span></span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="at">data =</span> <span class="fu">data.frame</span>(),</span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>            <span class="fu">aes</span>(<span class="at">x =</span> <span class="dv">3</span>,</span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>                <span class="at">y =</span> <span class="st">"Saison / Farmhouse Ale"</span>,</span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>                <span class="at">label =</span> <span class="st">"Top Styles"</span>),</span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>            <span class="at">fontface =</span> <span class="st">"italic"</span>,</span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>            <span class="at">size =</span> <span class="fl">2.5</span>)<span class="sc">+</span></span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="at">data =</span> <span class="fu">data.frame</span>(),</span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>            <span class="fu">aes</span>(<span class="at">x =</span> <span class="dv">3</span>,</span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>                <span class="at">y =</span> <span class="st">"Black &amp; Tan"</span>,</span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>                <span class="at">label =</span> <span class="st">"Bottom Styles"</span>),</span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>            <span class="at">fontface =</span> <span class="st">"italic"</span>,</span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>            <span class="at">size =</span> <span class="fl">2.5</span>)<span class="sc">+</span></span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Overall Review Score"</span>,</span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">""</span>,</span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Top 15 &amp; Bottom 15 Styles: Beers not filtered"</span>,</span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Estimated Review Score of Beer Styles with 95% Confidence Intervals"</span>)<span class="sc">+</span></span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">my_theme_tweaks</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/non-filtered-styles-conf-ints-1.png" class="quarto-figure quarto-figure-center figure-img" style="width:90.0%;height:90.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The results are pretty similar to the other approach with some small differences. First, the confidence intervals are narrower for all styles. This is expected because of how I did the grouping. Instead of having, say, 100 beers to base the estimates off of, these styles may use thousands of reviews–remember all those one review beers we filtered out before? With all that additional data, the confidence intervals <em>should</em> get narrower. Second, we see a handful of new styles present in the top and bottom styles. Lambic - Unblended and Gose didn’t make the cut before, but are present now. These new additions to the top and bottom styles have the wider confidence intervals because they are basing the estimates of less data.</p>
+<p>Essentially though, the information present is the same. Reviewers love stouts, belgian ales, sours and IPAs and they tend to dislike lagers and light beers.</p>
+</section>
+</section>
+</section>
+<section id="which-brewery-produces-the-strongest-beers-by-abv" class="level2">
+<h2 class="anchored" data-anchor-id="which-brewery-produces-the-strongest-beers-by-abv">Which brewery produces the strongest beers by ABV%?</h2>
+<p>With a better handle on the dataset, now I can actually address the question! First things first, there are 67,785 reviews with no ABV data so I need to remove that data. It’s only 4% of all reviews, so for the time being I’m not going to worry about just removing those reviews. Now the question is–what <em>is</em> a strong beer anyway? You can see from the histogram of the distribution of ABV’s that the vast majority of beers are under 10% ABV.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/beer-abv-exploration-1.png" class="quarto-figure quarto-figure-center figure-img" style="width:90.0%;height:90.0%"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<table class="table table-condensed">
+<thead>
+<tr>
+<th style="text-align:right;">
+beer_name
+</th>
+<th style="text-align:right;">
+beer_abv
+</th>
+<th style="text-align:right;">
+brewery_name
+</th>
+<th style="text-align:right;">
+beer_style
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+Schorschbräu Schorschbock 57%
+</td>
+<td style="text-align:right;">
+57.70
+</td>
+<td style="text-align:right;">
+Schorschbräu
+</td>
+<td style="text-align:right;">
+Eisbock
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Schorschbräu Schorschbock 43%
+</td>
+<td style="text-align:right;">
+43.00
+</td>
+<td style="text-align:right;">
+Schorschbräu
+</td>
+<td style="text-align:right;">
+Eisbock
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Sink The Bismarck!
+</td>
+<td style="text-align:right;">
+41.00
+</td>
+<td style="text-align:right;">
+BrewDog
+</td>
+<td style="text-align:right;">
+American Double / Imperial IPA
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Schorschbräu Schorschbock 40%
+</td>
+<td style="text-align:right;">
+39.44
+</td>
+<td style="text-align:right;">
+Schorschbräu
+</td>
+<td style="text-align:right;">
+Eisbock
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Black Damnation VI - Messy
+</td>
+<td style="text-align:right;">
+39.00
+</td>
+<td style="text-align:right;">
+De Struise Brouwers
+</td>
+<td style="text-align:right;">
+American Double / Imperial Stout
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Only 18 beers out of over 66,000! are over 20% ABV and as an early preview, you can see one brewery name standing out!.</p>
+<p>If I divide the data into reviews of beers &gt; 20% ABV and those &lt; 20% ABV, it’s easier to see how uncommon reviews for really high ABV beers are.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/abv-distributions-1.png" class="quarto-figure quarto-figure-center figure-img" style="width:90.0%;height:90.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The vast majority of beers reviewed fall right around the 5-6% range. And that’s not an empty plot on the right–there’s simply so few reviews of beers &gt;20% ABV that you can’t see them when I force the plots to have the same y-axis scale.</p>
+<p>The question of which brewery produces the strongest beers by ABV has more nuance than it might appear. First, the question asks which brewery produces the strongest <strong>beers</strong> which I am taking to mean it needs to produce more than one beer. Second, how should I measure how strong a breweries beers are? An average of their ABVs? Maybe take the median? What about looking at the proportion of beers that a brewery produces that are above some ‘strong’ beer threshold? All these methods seem to have merit and are pretty simple and quick to perform. Let’s try them out and see what they tell us.</p>
+<p>After a bit of filtering, grouping and aggregation(which you can see in the code below), you can see that Schorschbräu ranks at the top of both the mean and median rankings. In fact, the top 4 on both graphs are the same–albeit with one positional swap. One note: Why did I only include breweries that make 4 or more beers? Because the median number of beers produced is 4 and that seemed reasonable.</p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>average_abv <span class="ot">&lt;-</span> reviews_raw <span class="sc">%&gt;%</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># remove reviews with missing abv</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(beer_abv), <span class="sc">!</span><span class="fu">is.na</span>(brewery_name))<span class="sc">%&gt;%</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># don't want a weighted average, so we grab a df of unique beers for all breweries</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>(brewery_id, beer_name, <span class="at">.keep_all =</span> <span class="cn">TRUE</span>)<span class="sc">%&gt;%</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># group them by the brewery and the beer</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(brewery_id, brewery_name)<span class="sc">%&gt;%</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># getting mean, median and number of beers produced by each brewery</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">avg_abv =</span> <span class="fu">mean</span>(beer_abv),</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>            <span class="at">med_abv =</span> <span class="fu">median</span>(beer_abv),</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>            <span class="at">num_beers =</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()<span class="sc">%&gt;%</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># get the median and mean number of beers produced overall--will use for determining the threshold to cutoff breweries</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">mean_beers_produced_overall =</span> <span class="fu">mean</span>(num_beers),</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>         <span class="at">median_beers_produced_overall =</span> <span class="fu">median</span>(num_beers))</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="co"># several brewery_names aren't unique; append the unique id to the brewery name to get a unique brewery_name</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>duplicate_names <span class="ot">&lt;-</span> average_abv <span class="sc">%&gt;%</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">duplicated</span>(.[[<span class="st">"brewery_name"</span>]]))<span class="sc">%&gt;%</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(brewery_name)</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>average_abv <span class="ot">&lt;-</span> average_abv <span class="sc">%&gt;%</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>  <span class="co"># if the breweries in the duplicated names df, paste the id number on the end; otherwise just the brewery name</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">brewery_name =</span> <span class="fu">ifelse</span>(brewery_name <span class="sc">%in%</span> duplicate_names<span class="sc">$</span>brewery_name, <span class="fu">paste0</span>(brewery_name, <span class="st">"("</span>, brewery_id, <span class="st">")"</span>),</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>                               brewery_name))<span class="sc">%&gt;%</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>  <span class="co"># several breweries have multiple names separated by '/'. Keeping only the first name used </span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate</span>(brewery_name, </span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>           <span class="at">sep =</span> <span class="st">"/"</span>,</span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>           <span class="at">into =</span> <span class="fu">c</span>(<span class="st">"brewery_name"</span>, <span class="cn">NA</span>))</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a><span class="co"># create strongest mean beer plot</span></span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>p3 <span class="ot">&lt;-</span> average_abv <span class="sc">%&gt;%</span></span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">brewery_name =</span> <span class="fu">fct_reorder</span>(brewery_name, avg_abv))<span class="sc">%&gt;%</span></span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Median number of beers produced is 4 so only keeping those at or above that threshold</span></span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(num_beers <span class="sc">&gt;=</span> <span class="dv">4</span>)<span class="sc">%&gt;%</span></span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">top_n</span>(<span class="dv">10</span>, avg_abv)<span class="sc">%&gt;%</span></span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(avg_abv, brewery_name))<span class="sc">+</span></span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">"#0072B2"</span>, <span class="at">alpha =</span> .<span class="dv">8</span>, <span class="at">size =</span> <span class="dv">4</span>)<span class="sc">+</span></span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">number_format</span>(<span class="at">suffix =</span> <span class="st">"%"</span>))<span class="sc">+</span></span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"ABV"</span>,</span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">""</span>, </span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"By Mean"</span>,</span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">""</span>)<span class="sc">+</span></span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">my_theme_tweaks</span>()</span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a><span class="co"># create strongest median beer plot</span></span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>p4 <span class="ot">&lt;-</span> average_abv <span class="sc">%&gt;%</span></span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>(brewery_name, <span class="at">.keep_all =</span> <span class="cn">TRUE</span>)<span class="sc">%&gt;%</span></span>
+<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">brewery_name =</span> <span class="fu">fct_reorder</span>(brewery_name, med_abv))<span class="sc">%&gt;%</span></span>
+<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(num_beers <span class="sc">&gt;=</span> <span class="dv">4</span>)<span class="sc">%&gt;%</span></span>
+<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a>  <span class="fu">top_n</span>(<span class="dv">10</span>, med_abv)<span class="sc">%&gt;%</span></span>
+<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(med_abv, brewery_name))<span class="sc">+</span></span>
+<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">"#0072B2"</span>, <span class="at">alpha =</span> .<span class="dv">8</span>, <span class="at">size =</span> <span class="dv">4</span>)<span class="sc">+</span></span>
+<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">number_format</span>(<span class="at">suffix =</span> <span class="st">"%"</span>))<span class="sc">+</span></span>
+<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"ABV"</span>,</span>
+<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">""</span>, </span>
+<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"By Median"</span>,</span>
+<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">""</span>)<span class="sc">+</span></span>
+<span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a>  <span class="fu">my_theme_tweaks</span>()</span>
+<span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a><span class="fu">ggarrange</span>(p3, p4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/strongest-beers-by-mean-median-1.png" class="quarto-figure quarto-figure-center figure-img" style="width:90.0%;height:90.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Now what if the brewery that produces the strongest beers is the one that has the highest proportion of its beers above some ABV threshold. We know the mean ABV for a beer is 6.27% (median 5.7%). In fact, the 75th percentile for beer ABV is only 7.2%. 10% is where I, personally, start to think a beer is strong and with only 6.51% of beers having greater than or equal to 10% ABV, I think it’s a pretty reasonable mark of a ‘strong’ beer.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/strongest-beer-by-proportion-above-10-1.png" class="quarto-figure quarto-figure-center figure-img" style="width:90.0%;height:90.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Yet again, Schorschbräu sits at the top. They only make 10 different beers, but 90% of them are 10% ABV or higher! For a brewery that produces quite a few more beers, but still cranks out high ABV stuff, AleSmith Brewing Company is up there. They make over 50 different beers and over 70% of them are above 10% ABV.</p>
+<p>At the end of the day, Shorschbrau brewery seems to sit at the top of the ‘strong’ beer mountain–regardless of the metric I used. With a little googling, it seems they are well known for pushing the limits of strong beers. They even produce one that is 57% ABV!</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<table class="table table-condensed">
+<thead>
+<tr>
+<th style="text-align:right;">
+beer_name
+</th>
+<th style="text-align:right;">
+beer_abv
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+Schorschbräu Schorschbock 57%
+</td>
+<td style="text-align:right;">
+57.70
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Schorschbräu Schorschbock 43%
+</td>
+<td style="text-align:right;">
+43.00
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Schorschbräu Schorschbock 40%
+</td>
+<td style="text-align:right;">
+39.44
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Schorschbräu Schorschbock 31%
+</td>
+<td style="text-align:right;">
+30.86
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Schorschbock
+</td>
+<td style="text-align:right;">
+16.00
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Schorsch Weizen 16%
+</td>
+<td style="text-align:right;">
+16.00
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Schorschbock Ice 13
+</td>
+<td style="text-align:right;">
+13.00
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Schorschbräu Donner Bock
+</td>
+<td style="text-align:right;">
+13.00
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Schorschbräu Donner Weizen
+</td>
+<td style="text-align:right;">
+13.00
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Schorschbräu Dunkles
+</td>
+<td style="text-align:right;">
+4.90
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="if-you-had-to-pick-3-beers-to-recommend-using-only-this-data-which-would-you-pick" class="level2">
+<h2 class="anchored" data-anchor-id="if-you-had-to-pick-3-beers-to-recommend-using-only-this-data-which-would-you-pick">If you had to pick 3 beers to recommend using only this data, which would you pick?</h2>
+<p>Yet again, there are several ways you could approach this question. People seem to have beer style preferences, so maybe recommending 3 beers based on what style beer you like would perform well–you like Hefeweizens, here are 3 Hefeweizens that you might like. I think this approach probably works OK, but it’s just recommending the top rated beers of each style to you. It’s possible to get more personalized recommendations by building a recommender system. I’m not sure I’d take this approach if I had a strict time limit for this take home test, but since I’m blogging about the process, I’m taking the fun approach and build a recommender system.</p>
+<p>So what is a recommender system anyway? If you’ve ever used Netflix or Amazon you’ve encountered them many, many times. A recommendation system takes past user information–in our case beer ratings–to generate predictions for how that user would rate a beer they haven’t tried. There are many ways to do this nowadays, but an extremely popular(and good) method is called matrix factorization. If you want a detailed explanation of the math, check out this great <a href="https://albertauyeung.github.io/2017/04/23/python-matrix-factorization.html/">blog post</a>, but the intuition is relatively easy to grasp. First, you build a matrix with users(reviewers in this case) as the rows and items(beers) as the columns. Each cell is the rating that reviewer1 gave beer1, for example. When you flesh out this matrix, there will be empty cells where a reviewer hasn’t tried beer21 or beer143. With matrix factorization we predict what we think the value of these empty cells should be–what would this user rate that beer if they try it? So by predicting the value of these empty cells, the recommendation system is giving us just what we need to recommend new beers to people. What beers should you try? The ones with the highest predicted rating that you haven’t tried yet?</p>
+<p>It certainly seems pretty hand-wavy to say we just fill in some cells and use those values to recommend beers. How do you actually generate the predictions you might wonder? We do this by discovering the <em>latent features</em> that determine how a user rates items. The whole concept of matrix factorization works because we can take advantage of the fact that individuals don’t have 100% unique preferences. Our preferences are clustered. Maybe we like movies with a certain actress. Maybe we like a certain genre of movie. Or perhaps we like clothing from a certain designer or with a certain color palette. With beer, maybe we like beers of a certain style or beers that are extra hoppy. These are all things that could be latent features in a recommendation system. Using these latent features we can infer that if user1 and user2 both have a feature ‘Likes movies with Tom Hanks’, then a new movie with Tom Hanks will have a high predicted value for them.</p>
+<p>The details of how you solve for these latent features algorithmically can be found in the blog post I linked above(spoiler: you use gradient descent to solve for a user association matrix <strong>P</strong> and an item association matrix <strong>Q</strong>). For our purposes, it’s enough to think we are generating features of reviewers–reviewers that like bitter beers, reviewers that like chocolate stouts, reviewer that like beers from a certain area or of a certain ABV–and generating features for beers–beers that are high ABV, beers that are fruity or bitter, beers from a specific brewery–and using those to construct predictions for unseen beers.</p>
+<p>Luckily, there are several great packages in R that allow for easy implementation of matrix factorization. First, I need to do a bit of cleanup. Most reviewers don’t review many beers and most beers don’t get reviewed many times. We like a sparse matrix, but we don’t gain a lot of information from reviewers that review one time or beers than are only reviewed one time. We need to only include reviewers and beers above some threshold.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/number-of-reviews-histogram-1.png" class="quarto-figure quarto-figure-center figure-img" style="width:90.0%;height:90.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>I’m filtering the dataset to only include reviewers who have reviewed at least 50 beers and only include beers with at least 100 reviews. With this dataset, I assign new indexes for user_id and beer_id (starting at 1) and then build a sparse triplet matrix–that’s just a fancy way of saying I build a matrix where I only include user and beer combinations that actually have a rating and I make sure it’s of the form (user_id, beer_id, rating).</p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># filter to reviewers who have reviewed above 50 beers and beers with greater than 100 reviews</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>over_50_reviews <span class="ot">&lt;-</span> reviews_raw<span class="sc">%&gt;%</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_count</span>(review_profilename, <span class="at">name =</span> <span class="st">"user_reviews"</span>)<span class="sc">%&gt;%</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(user_reviews <span class="sc">&gt;=</span> <span class="dv">50</span>)<span class="sc">%&gt;%</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_count</span>(beer_beerid, <span class="at">name =</span> <span class="st">'beer_reviews'</span>)<span class="sc">%&gt;%</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(beer_reviews <span class="sc">&gt;=</span><span class="dv">100</span>, </span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>         <span class="sc">!</span><span class="fu">is.na</span>(beer_name),</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>         <span class="sc">!</span><span class="fu">is.na</span>(review_profilename),</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>         <span class="sc">!</span><span class="fu">is.na</span>(review_overall))<span class="sc">%&gt;%</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># add new user_id(starting at 1) and beer_id(starting at 1): needed for recosystem triplet matrix</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(., <span class="at">user_id =</span> <span class="fu">group_indices</span>(., review_profilename),</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>         <span class="at">beer_id =</span> <span class="fu">group_indices</span>(., beer_beerid))</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="co"># recosystem requires a triplet matrix of the form (user, beer, rating)</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>user_beer_triplet <span class="ot">&lt;-</span> over_50_reviews <span class="sc">%&gt;%</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(user_id, beer_id, review_overall)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>To train the actual model I need to specify the inputs for the training function and then set the parameters. The main parameter to focus on is <em>dim</em>. This determines the number of latent factors to fit. In playing around, I found that the default of 10 was too few factors. It gave reasonable recommendations, but it was essentially recommending the same beers to everyone, regardless of personal preferences. After a bit of tinkering, I decided to use 200 and see how specific the recommendations would get. You could probably go higher, but the model takes longer to fit and the results were pretty good at 200 already. The code for training and generating predictions for the recommender is in the code chunk below and I’d encourage you do check it out–even though it’s basically straight from the recosystem documentation.</p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(recosystem)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co">#create recosystem object</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>r <span class="ot">&lt;-</span> <span class="fu">Reco</span>()</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># training set is the set of items that actually were rated. In a more advanced system I'd have a separate train/test split for</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co"># the training of the model</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co"># data_memory specifics the inputs to the $train and $predict functions</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>train_set <span class="ot">=</span> <span class="fu">data_memory</span>(<span class="at">user_index =</span> user_beer_triplet<span class="sc">$</span>user_id,</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>                        <span class="at">item_index =</span> user_beer_triplet<span class="sc">$</span>beer_id,</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>                        <span class="at">rating =</span> user_beer_triplet<span class="sc">$</span>review_overall,</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>                        <span class="at">index1 =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co"># dim parameter controls the number of latent factors in the model.</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Default dim = 10 and that's too few--you end up having pretty much</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co"># the same beers recommended to everyone. There is a balancing to be done here</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="co"># of creating too many latent factors and essentially overfitting and too few</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="co"># and giving really generic recommendations</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>r<span class="sc">$</span><span class="fu">train</span>(train_set, <span class="at">opts =</span> <span class="fu">list</span>(<span class="at">dim =</span> <span class="dv">200</span>,                        </span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>                               <span class="at">costp_l1 =</span> <span class="dv">0</span>, <span class="at">costp_l2 =</span> <span class="fl">0.01</span>,   </span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>                               <span class="at">costq_l1 =</span> <span class="dv">0</span>, <span class="at">costq_l2 =</span> <span class="fl">0.01</span>,   </span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>                               <span class="at">niter =</span> <span class="dv">20</span>,                      </span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>                               <span class="at">nthread =</span> <span class="dv">6</span>))</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Save model since it takes some time to generate and I need it later</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(r, <span class="st">"beer_reco_model.RDS"</span>)</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a><span class="co"># generate predictions for all users ahead of time and save that object</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a><span class="co"># build a grid of all user beer combinations to feed into recosystem</span></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>beers <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">n_distinct</span>(user_beer_triplet<span class="sc">$</span>beer_id)</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>users <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">n_distinct</span>(user_beer_triplet<span class="sc">$</span>user_id)</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>pred <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">user =</span> users, <span class="at">beer =</span> beers)</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a><span class="co"># create recosystem specific data object</span></span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>prediction_set <span class="ot">&lt;-</span> <span class="fu">data_memory</span>(pred<span class="sc">$</span>user,</span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>                              pred<span class="sc">$</span>beer,</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>                              <span class="at">index1 =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a><span class="co"># generate predictions for every user/beer combo</span></span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>pred<span class="sc">$</span>rating <span class="ot">&lt;-</span> r<span class="sc">$</span><span class="fu">predict</span>(prediction_set, <span class="fu">out_memory</span>())</span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(pred, <span class="st">"beer_reco_predictions.RDS"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The model runs through 20 iterations and the RMSE is still dropping. You can really easily overfit this model. If you do 300 or even 400 latent factors the RMSE will continue to drop. In a full scale implementation, I would be using a training and testing set and/or cross validation to choose the number of latent factors that minimizes the RMSE on the train set. Here, I’m simply doing a proof of concept, so we are playing it a bit fast and loose.</p>
+<p>With the model trained and predictions precomputed for all users, I can select some users and examine the results. I built a couple helper functions to view the results. The first takes the prediction data frame and filters out the beers that user already reviewed then returns the top 3 beers predicted for them. The second function grabs the top 10 beers that that user already reviewed so we can compare and see if the results are sensible.</p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">#using 'here' for easier paths</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>predictions <span class="ot">&lt;-</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"Data"</span>, <span class="st">"beer_reco_predictions.RDS"</span>)<span class="sc">%&gt;%</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">readRDS</span>()</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>top_three_beers_for_user <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">preds =</span> predictions, <span class="at">user_beer_sparse =</span> user_beer_triplet, <span class="at">user_id =</span> <span class="cn">NULL</span>){</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co"># inputs: </span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">#       preds - precomputed predictions file with predictions for all users</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co">#       user_beer_sparse - user_beer matrix used to get beers specific user has tried</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co">#       user_id - specific user to recommend beers for; defaults to randomly selected user</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Default to grabbing a random user_id. If specified, use given user_id</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">is.null</span>(user_id)){</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    user <span class="ot">&lt;-</span> <span class="fu">sample.int</span>(<span class="fu">n_distinct</span>(user_beer_sparse<span class="sc">$</span>beer_id), <span class="dv">1</span>)</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span>{</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stopifnot</span>(<span class="fu">is.numeric</span>(user_id))</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stopifnot</span>(user_id <span class="sc">!=</span> <span class="dv">0</span>)</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    user <span class="ot">&lt;-</span> user_id</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>  <span class="co"># df of beers the specific user has reviewed</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>  users_beers <span class="ot">&lt;-</span> user_beer_sparse <span class="sc">%&gt;%</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(user_id <span class="sc">%in%</span> user)</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>  <span class="co"># return top three beers by predicted rating</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>  <span class="co"># remove predictions for beers user already reviewed</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>  preds <span class="sc">%&gt;%</span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(user <span class="sc">==</span> user_id, <span class="sc">!</span>(beer <span class="sc">%in%</span> users_beers<span class="sc">$</span>beer_id))<span class="sc">%&gt;%</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(<span class="fu">desc</span>(rating))<span class="sc">%&gt;%</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>    <span class="co"># this join allows me to get the beer name, style and brewery name</span></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>    <span class="co"># the prediction df is just id numbers and a rating prediction</span></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>    <span class="fu">inner_join</span>((over_50_reviews<span class="sc">%&gt;%</span></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>                 <span class="fu">distinct</span>(beer_id, <span class="at">.keep_all =</span> <span class="cn">TRUE</span>)<span class="sc">%&gt;%</span></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>                  <span class="fu">select</span>(beer_id, beer_name, beer_style)), <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"beer"</span> <span class="ot">=</span> <span class="st">"beer_id"</span>))<span class="sc">%&gt;%</span></span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>    <span class="fu">top_n</span>(<span class="dv">3</span>, rating)<span class="sc">%&gt;%</span></span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="sc">-</span>rating, <span class="sc">-</span>beer)<span class="sc">%&gt;%</span></span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>    formattable<span class="sc">::</span><span class="fu">formattable</span>()</span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>users_top_rated_beers <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">df =</span> over_50_reviews, <span class="at">user =</span> <span class="cn">NULL</span>){</span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>  <span class="co"># function takes a specific user_id and returns the style, name and rating of their top 10(ties included) beers</span></span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">%&gt;%</span></span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(user_id <span class="sc">==</span> user)<span class="sc">%&gt;%</span></span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(user_id, beer_id, beer_name, beer_style, review_overall)<span class="sc">%&gt;%</span></span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a>    <span class="fu">slice_max</span>(review_overall, <span class="at">n =</span> <span class="dv">10</span>, <span class="at">with_ties =</span> <span class="cn">FALSE</span>)<span class="sc">%&gt;%</span></span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(<span class="fu">desc</span>(review_overall))<span class="sc">%&gt;%</span></span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="sc">-</span>review_overall, <span class="sc">-</span>beer_id)<span class="sc">%&gt;%</span></span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a>    formattable<span class="sc">::</span><span class="fu">formattable</span>()</span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Looking at the predictions for two random reviewers in the dataset, you can see that, as expected, they are given different recommendations. User 3831 is recommended an English Bitter, a Red Ale and a Rye which seems to make sense since they have a Rye and a couple Red Ales in their highest rated beers.</p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">top_three_beers_for_user</span>(<span class="at">user_id =</span> <span class="dv">3831</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="table table-condensed">
+<thead>
+<tr>
+<th style="text-align:right;">
+user
+</th>
+<th style="text-align:right;">
+beer_name
+</th>
+<th style="text-align:right;">
+beer_style
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+3831
+</td>
+<td style="text-align:right;">
+Bluebird Bitter
+</td>
+<td style="text-align:right;">
+English Bitter
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3831
+</td>
+<td style="text-align:right;">
+PILZILLA
+</td>
+<td style="text-align:right;">
+Keller Bier / Zwickel Bier
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3831
+</td>
+<td style="text-align:right;">
+Ommegang Rouge
+</td>
+<td style="text-align:right;">
+Flanders Red Ale
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">users_top_rated_beers</span>(<span class="at">user =</span> <span class="dv">3831</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="table table-condensed">
+<thead>
+<tr>
+<th style="text-align:right;">
+user_id
+</th>
+<th style="text-align:right;">
+beer_name
+</th>
+<th style="text-align:right;">
+beer_style
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+3831
+</td>
+<td style="text-align:right;">
+Hacker-Pschorr Münchner Gold
+</td>
+<td style="text-align:right;">
+Munich Helles Lager
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3831
+</td>
+<td style="text-align:right;">
+Fuller’s London Pride
+</td>
+<td style="text-align:right;">
+English Pale Ale
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3831
+</td>
+<td style="text-align:right;">
+Abbot Ale
+</td>
+<td style="text-align:right;">
+English Pale Ale
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3831
+</td>
+<td style="text-align:right;">
+Hofbräu Original
+</td>
+<td style="text-align:right;">
+Munich Helles Lager
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3831
+</td>
+<td style="text-align:right;">
+Newcastle Brown Ale
+</td>
+<td style="text-align:right;">
+English Brown Ale
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3831
+</td>
+<td style="text-align:right;">
+Sierra Nevada Bigfoot Barleywine Style Ale
+</td>
+<td style="text-align:right;">
+American Barleywine
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3831
+</td>
+<td style="text-align:right;">
+Sierra Nevada Summerfest Lager
+</td>
+<td style="text-align:right;">
+Czech Pilsener
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3831
+</td>
+<td style="text-align:right;">
+Sierra Nevada Pale Ale
+</td>
+<td style="text-align:right;">
+American Pale Ale (APA)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3831
+</td>
+<td style="text-align:right;">
+Boddingtons Pub Ale
+</td>
+<td style="text-align:right;">
+English Pale Ale
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3831
+</td>
+<td style="text-align:right;">
+Hacker-Pschorr Hefe Weisse Natürtrub
+</td>
+<td style="text-align:right;">
+Hefeweizen
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>User 270 was recommended an Imperial IPA, a Wild Ale and a Hefeweizen. This again makes since as you can see they rate <em>many</em> Imperial IPA’s highly. It’s pretty remarkable what a well tuned recommender system can predict and even the simple one here seems to do a pretty good job of generating reasonable recommendations for the top 3 beers for a particular reviewer.</p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">top_three_beers_for_user</span>(<span class="at">user_id =</span> <span class="dv">270</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="table table-condensed">
+<thead>
+<tr>
+<th style="text-align:right;">
+user
+</th>
+<th style="text-align:right;">
+beer_name
+</th>
+<th style="text-align:right;">
+beer_style
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+270
+</td>
+<td style="text-align:right;">
+Furious
+</td>
+<td style="text-align:right;">
+American IPA
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+270
+</td>
+<td style="text-align:right;">
+Bitter Brewer
+</td>
+<td style="text-align:right;">
+English Bitter
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+270
+</td>
+<td style="text-align:right;">
+Citra DIPA
+</td>
+<td style="text-align:right;">
+American Double / Imperial IPA
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">users_top_rated_beers</span>(<span class="at">user =</span> <span class="dv">270</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="table table-condensed">
+<thead>
+<tr>
+<th style="text-align:right;">
+user_id
+</th>
+<th style="text-align:right;">
+beer_name
+</th>
+<th style="text-align:right;">
+beer_style
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+270
+</td>
+<td style="text-align:right;">
+B.O.R.I.S. The Crusher Oatmeal-Imperial Stout
+</td>
+<td style="text-align:right;">
+Russian Imperial Stout
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+270
+</td>
+<td style="text-align:right;">
+Hop 15
+</td>
+<td style="text-align:right;">
+American Double / Imperial IPA
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+270
+</td>
+<td style="text-align:right;">
+Hop Rod Rye
+</td>
+<td style="text-align:right;">
+Rye Beer
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+270
+</td>
+<td style="text-align:right;">
+AleSmith Speedway Stout
+</td>
+<td style="text-align:right;">
+American Double / Imperial Stout
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+270
+</td>
+<td style="text-align:right;">
+AleSmith IPA
+</td>
+<td style="text-align:right;">
+American IPA
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+270
+</td>
+<td style="text-align:right;">
+YuleSmith (Summer)
+</td>
+<td style="text-align:right;">
+American Double / Imperial IPA
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+270
+</td>
+<td style="text-align:right;">
+Chimay Grande Réserve (Blue)
+</td>
+<td style="text-align:right;">
+Belgian Strong Dark Ale
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+270
+</td>
+<td style="text-align:right;">
+Trappistes Rochefort 10
+</td>
+<td style="text-align:right;">
+Quadrupel (Quad)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+270
+</td>
+<td style="text-align:right;">
+Unfiltered Double Simcoe IPA
+</td>
+<td style="text-align:right;">
+American Double / Imperial IPA
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+270
+</td>
+<td style="text-align:right;">
+XS Imperial India Pale Ale
+</td>
+<td style="text-align:right;">
+American Double / Imperial IPA
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="which-of-the-factorsaroma-taste-appearance-palette-are-most-important-in-determining-the-overall-quality-of-the-beer" class="level2">
+<h2 class="anchored" data-anchor-id="which-of-the-factorsaroma-taste-appearance-palette-are-most-important-in-determining-the-overall-quality-of-the-beer">Which of the factors(aroma, taste, appearance, palette) are most important in determining the overall quality of the beer?</h2>
+<p>This is another fun question because–yet again–there are a lot of different ways you could reason about finding an answer. Initially, I wanted to use PCA. I figured I could use it to see which factor most closely corresponded to the first principle component–which is where, by definition, most of the variance occurs. But after thinking it over some more, I decided not to use this approach. Typically PCA is used when you have a lot of variables that are in play. Here, I’m only really looking at 4. While I think you <em>could</em> cast the problem in a way to use PCA, I don’t know that it’s the good approach, so I’m using other techniques here. I’d love to see how someone would approach this problem using PCA though, so if you get a hankering to do that, please shoot me a link to your analysis in the comments!</p>
+<p>Instead of PCA, I’m going to do two things:</p>
+<ol type="1">
+<li>Examine the correlations between the subfactors(taste, palette, aroma, appearance) and the overall review scores</li>
+<li>Fit a linear model and see which factors are most important to the model.</li>
+</ol>
+<section id="theyre-correlated-you-say" class="level4">
+<h4 class="anchored" data-anchor-id="theyre-correlated-you-say">They’re correlated you say?</h4>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/subfactors-correlation-analysis-1.png" class="quarto-figure quarto-figure-center figure-img" style="width:90.0%;height:90.0%"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<table class="table table-condensed">
+<thead>
+<tr>
+<th style="text-align:right;">
+term
+</th>
+<th style="text-align:right;">
+review_appearance
+</th>
+<th style="text-align:right;">
+review_aroma
+</th>
+<th style="text-align:right;">
+review_palate
+</th>
+<th style="text-align:right;">
+review_taste
+</th>
+<th style="text-align:right;">
+review_overall
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+review_appearance
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+review_aroma
+</td>
+<td style="text-align:right;">
+.56
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+review_palate
+</td>
+<td style="text-align:right;">
+.57
+</td>
+<td style="text-align:right;">
+.62
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+review_taste
+</td>
+<td style="text-align:right;">
+.55
+</td>
+<td style="text-align:right;">
+.72
+</td>
+<td style="text-align:right;">
+.73
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+review_overall
+</td>
+<td style="text-align:right;">
+.50
+</td>
+<td style="text-align:right;">
+.62
+</td>
+<td style="text-align:right;">
+.70
+</td>
+<td style="text-align:right;">
+.79
+</td>
+<td style="text-align:right;">
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>The highest correlations appear between taste and overall and palate and overall. Intuitively this makes sense–how a beer tastes probably plays a pretty big role in how the beer is scored overall. Aroma and appearance are relatively unimportant it seems, but it’s important to note that aroma is highly correlated with taste–after all, smell plays a huge role in how we perceive food–so aroma may be undervalued by this metric.</p>
+<p>This scatterplot shows the relationship of appearance/taste/etc to overall scores. You can see how taste is much more tightly clustered(thus the higher correlation), while the others are quite a bit more spread out.</p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>reviews_raw<span class="sc">%&gt;%</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(review_overall, review_aroma, review_appearance, review_taste, review_palate)<span class="sc">%&gt;%</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># remove reviews with zeros</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(review_overall <span class="sc">&gt;</span> <span class="dv">0</span>)<span class="sc">%&gt;%</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># plotting 1.5M reviews takes too long and you get the same idea with 1,500 points</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sample_frac</span>(<span class="at">size =</span> .<span class="dv">001</span>)<span class="sc">%&gt;%</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">Aroma =</span> review_aroma, <span class="at">Appearance =</span> review_appearance, <span class="at">Taste =</span> review_taste, <span class="at">Palate =</span> review_palate)<span class="sc">%&gt;%</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># gather so I can use a facet plot</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gather</span>(key, value, <span class="sc">-</span>review_overall)<span class="sc">%&gt;%</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> value, <span class="at">y =</span> review_overall, <span class="at">alpha =</span> .<span class="dv">1</span>))<span class="sc">+</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()<span class="sc">+</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># without jitter it just looks like a grid since values are discrete</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>()<span class="sc">+</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>key, <span class="at">scales =</span> <span class="st">"free_x"</span>)<span class="sc">+</span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># fits a linear model of review_overall ~ Appearance/taste/etc</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">TRUE</span>, <span class="at">color =</span> <span class="st">'red'</span>)<span class="sc">+</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">'none'</span>)<span class="sc">+</span></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">""</span>,</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Overall Score"</span>,</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"How Appearance, Aroma, Palate and Taste Affect Overall Beer Scores"</span>)<span class="sc">+</span></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">my_theme_tweaks</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/subfactor-scatterplot-with-lm-1.png" class="quarto-figure quarto-figure-center figure-img" style="width:90.0%;height:90.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="linear-model-for-feature-importance" class="level4">
+<h4 class="anchored" data-anchor-id="linear-model-for-feature-importance">Linear model for feature importance</h4>
+<p>This is useful, if not completely satisfying information. Maybe we can glean a little more insight by building a linear model to see how things line up. There are a ton of more sophisticated linear models and R packages we could use here, but the base <strong>lm</strong> function is quick, easy, and will more than suffice for what I’m doing here.</p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># get rid of 7 reviews that are zero for some reason--pretty sure it's supposed to be 1-5</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>reviews_zeros_removed <span class="ot">&lt;-</span> reviews_raw <span class="sc">%&gt;%</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(review_overall, review_aroma, review_appearance, review_taste, review_palate)<span class="sc">%&gt;%</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(review_overall <span class="sc">&gt;</span> <span class="dv">0</span>)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Build simple linear model with no interaction effects</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(review_overall<span class="sc">~</span> review_taste <span class="sc">+</span> review_aroma <span class="sc">+</span> review_appearance <span class="sc">+</span> review_palate, <span class="at">data =</span> reviews_zeros_removed)</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = review_overall ~ review_taste + review_aroma + review_appearance + 
+    review_palate, data = reviews_zeros_removed)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-3.8723 -0.2565 -0.0041  0.2441  3.6665 
+
+Coefficients:
+                   Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)       0.4399268  0.0023020  191.10   &lt;2e-16 ***
+review_taste      0.5515190  0.0007770  709.82   &lt;2e-16 ***
+review_aroma      0.0478437  0.0007234   66.14   &lt;2e-16 ***
+review_appearance 0.0357500  0.0006998   51.08   &lt;2e-16 ***
+review_palate     0.2585047  0.0007599  340.20   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.4213 on 1586602 degrees of freedom
+Multiple R-squared:  0.6581,    Adjusted R-squared:  0.6581 
+F-statistic: 7.636e+05 on 4 and 1586602 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<p>This linear model is predicting review_overall from the sub-reviews–taste, aroma, appearance and palate. With an R-squared of just .658, this model isn’t super accurate, but it’s good enough for our purposes.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> I just want to see which factor is most important to the overall review score after all. It’s tempting to look at the coefficient values and say whichever is larger is more important, but that’s <a href="https://stats.stackexchange.com/a/202846">not really true</a>. Variables on different scales, variables with wildly different variances or multi-collinearity between variables will all make determining feature importance from the coefficient values problematic(if not outright wrong).</p>
+<p>Luckily, some very smart statisticians built a package called <a href="https://cran.r-project.org/web/packages/relaimpo/relaimpo.pdf"><strong>relaimpo</strong></a> that will calculate more useful feature importance metrics. It turns out this is a really slippery and complicated area of statistics, so I’d encourage you to read about it <a href="https://prof.beuth-hochschule.de/fileadmin/prof/groemp/downloads/amstat07mayp139.pdf">here</a> if you’d like to see how a statistician thinks about this area. There are 8 different metrics you can use in <em>relaimpo</em>, but they all basically give the same answer. I’ve included 5 below(<em>lmg</em> and <em>betasq</em> seem to be the most commonly used metrics) and you can see that each metric under ‘Relative importance metrics’ gives the same breakdown of feature importance:</p>
+<ol type="1">
+<li>Taste</li>
+<li>Palate</li>
+<li>Aroma</li>
+<li>Appearance</li>
+</ol>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># calc.relimp calculates several measures that give the relative importance of the variables in a model.</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>metrics <span class="ot">&lt;-</span> <span class="fu">calc.relimp</span>(m1, <span class="at">type =</span> <span class="fu">c</span>(<span class="st">"lmg"</span>, <span class="st">"first"</span>, <span class="st">"last"</span>, <span class="st">"betasq"</span>, <span class="st">"car"</span>))</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>metrics</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Response variable: review_overall 
+Total response variance: 0.5192339 
+Analysis based on 1586607 observations 
+
+4 Regressors: 
+review_taste review_aroma review_appearance review_palate 
+Proportion of variance explained by model: 65.81%
+Metrics are not normalized (rela=FALSE). 
+
+Relative importance metrics: 
+
+                         lmg         last     first       betasq        car
+review_taste      0.28889505 0.1085608974 0.6238184 0.3138592744 0.33941105
+review_aroma      0.11738736 0.0009425892 0.3794776 0.0021454358 0.08843677
+review_appearance 0.06859918 0.0005622868 0.2516635 0.0009341328 0.04832851
+review_palate     0.18325632 0.0249380132 0.4926922 0.0598984664 0.18196159
+
+Average coefficients for different model sizes: 
+
+                         1X       2Xs        3Xs        4Xs
+review_taste      0.7775389 0.6717731 0.60371696 0.55151900
+review_aroma      0.6362978 0.3051504 0.13827614 0.04784375
+review_appearance 0.5867889 0.1872267 0.07416628 0.03575000
+review_palate     0.7413930 0.4927871 0.35193831 0.25850473</code></pre>
+</div>
+</div>
+<p>There is quite a bit of difference in how <em>much</em> more important taste is compared to appearance, but the ranking is the same regardless of the metric used–<strong>taste</strong> is most important in determining the overall review of a beer and appearance is least important.</p>
+</section>
+</section>
+<section id="if-i-enjoy-a-beer-due-to-its-aroma-and-appearance-which-beer-style-should-i-try" class="level2">
+<h2 class="anchored" data-anchor-id="if-i-enjoy-a-beer-due-to-its-aroma-and-appearance-which-beer-style-should-i-try">If I enjoy a beer due to its aroma and appearance, which beer style should I try?</h2>
+<p>So what if we aren’t the typical beer drinker and what we really care about is the aroma and appearance of a beer. How should I determine what to drink then? I think a simple approach is appropriate for this question. If a beer drinker has a strong preference for beers that are very aromatic and richly colored, then they should like beer styles that score highly in the review_aroma and review_appearance variables.</p>
+<p>For the graph below I grouped by the style of beer and then averaged the aroma and appearance scores. Additionally, I took the average of the aroma and appearance to get a sense of the total ‘smell and sight’ score.</p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>aroma_and_appearance <span class="ot">&lt;-</span> reviews_raw <span class="sc">%&gt;%</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(brewery_name))<span class="sc">%&gt;%</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(beer_style)<span class="sc">%&gt;%</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># group by style and then take average of aroma, appearance and overall</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">reviews =</span> <span class="fu">n</span>(),</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">avg_aroma =</span> <span class="fu">mean</span>(review_aroma),</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">avg_appearance =</span> <span class="fu">mean</span>(review_appearance),</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">avg_overall =</span> <span class="fu">mean</span>(review_overall))<span class="sc">%&gt;%</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()<span class="sc">%&gt;%</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># use the average aroma and appearance scores for each style and take the average of the two to have an aroma+appearance score</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">avg_aroma_appear =</span> (avg_aroma <span class="sc">+</span> avg_appearance)<span class="sc">/</span><span class="dv">2</span>)</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a><span class="co"># ggalt let's me use the geom_dumbbell geom.</span></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggalt)</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>aroma_and_appearance <span class="sc">%&gt;%</span></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">beer_style =</span> <span class="fu">fct_reorder</span>(beer_style, avg_aroma_appear))<span class="sc">%&gt;%</span></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">top_n</span>(<span class="dv">25</span>, avg_aroma_appear)<span class="sc">%&gt;%</span></span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>avg_overall)<span class="sc">%&gt;%</span></span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">y =</span> beer_style))<span class="sc">+</span></span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> avg_aroma_appear),<span class="at">size =</span> <span class="dv">3</span>, <span class="at">alpha =</span> .<span class="dv">8</span>)<span class="sc">+</span></span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>  <span class="co"># dumbbell needs both the left and right dots specified: use x and xend </span></span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_dumbbell</span>(<span class="fu">aes</span>(<span class="at">x =</span> avg_aroma, <span class="at">xend =</span> avg_appearance),</span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>                <span class="at">size_x =</span> <span class="fl">2.5</span>,</span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a>                <span class="at">size_xend =</span> <span class="fl">2.5</span>,</span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a>                <span class="at">colour_x =</span> <span class="st">"#D55E00"</span>,</span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a>                <span class="at">colour_xend =</span> <span class="st">"#0072B2"</span>,</span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a>                <span class="at">alpha =</span> .<span class="dv">5</span>,</span>
+<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a>                <span class="at">size =</span> .<span class="dv">75</span>)<span class="sc">+</span></span>
+<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a>  <span class="co"># identifying Aroma, appearance and avg score on plot for better visibility</span></span>
+<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="at">data =</span> <span class="fu">data.frame</span>(),</span>
+<span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a>            <span class="fu">aes</span>(<span class="at">x =</span> <span class="fl">4.15</span>, <span class="at">y =</span> <span class="st">"American Double / Imperial Stout"</span>, <span class="at">label =</span> <span class="st">"Aroma"</span>),</span>
+<span id="cb17-32"><a href="#cb17-32" aria-hidden="true" tabindex="-1"></a>            <span class="at">color =</span> <span class="st">"#D55E00"</span>,</span>
+<span id="cb17-33"><a href="#cb17-33" aria-hidden="true" tabindex="-1"></a>            <span class="at">nudge_y =</span> .<span class="dv">1</span>,</span>
+<span id="cb17-34"><a href="#cb17-34" aria-hidden="true" tabindex="-1"></a>            <span class="at">nudge_x =</span> <span class="sc">-</span>.<span class="dv">01</span>,</span>
+<span id="cb17-35"><a href="#cb17-35" aria-hidden="true" tabindex="-1"></a>            <span class="at">fontface =</span> <span class="st">'italic'</span>,</span>
+<span id="cb17-36"><a href="#cb17-36" aria-hidden="true" tabindex="-1"></a>            <span class="at">size =</span> <span class="fl">2.5</span>)<span class="sc">+</span></span>
+<span id="cb17-37"><a href="#cb17-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="at">data =</span> <span class="fu">data.frame</span>(),</span>
+<span id="cb17-38"><a href="#cb17-38" aria-hidden="true" tabindex="-1"></a>            <span class="fu">aes</span>(<span class="at">x =</span> <span class="fl">4.18</span>, <span class="at">y =</span> <span class="st">"American Double / Imperial Stout"</span>, <span class="at">label =</span> <span class="st">"Appearance"</span>),</span>
+<span id="cb17-39"><a href="#cb17-39" aria-hidden="true" tabindex="-1"></a>            <span class="at">color =</span> <span class="st">"#0072B2"</span>,</span>
+<span id="cb17-40"><a href="#cb17-40" aria-hidden="true" tabindex="-1"></a>            <span class="at">nudge_y =</span> .<span class="dv">1</span>,</span>
+<span id="cb17-41"><a href="#cb17-41" aria-hidden="true" tabindex="-1"></a>            <span class="at">nudge_x =</span> .<span class="dv">015</span>,</span>
+<span id="cb17-42"><a href="#cb17-42" aria-hidden="true" tabindex="-1"></a>            <span class="at">fontface =</span> <span class="st">'italic'</span>,</span>
+<span id="cb17-43"><a href="#cb17-43" aria-hidden="true" tabindex="-1"></a>            <span class="at">size =</span> <span class="fl">2.5</span>)<span class="sc">+</span></span>
+<span id="cb17-44"><a href="#cb17-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="at">data =</span> <span class="fu">data.frame</span>(),</span>
+<span id="cb17-45"><a href="#cb17-45" aria-hidden="true" tabindex="-1"></a>            <span class="fu">aes</span>(<span class="at">x =</span> <span class="fl">4.14</span>, <span class="at">y =</span> <span class="st">"Russian Imperial Stout"</span>, <span class="at">label =</span> <span class="st">"Average of Aroma &amp; Appearance"</span>),</span>
+<span id="cb17-46"><a href="#cb17-46" aria-hidden="true" tabindex="-1"></a>            <span class="at">color =</span> <span class="st">"black"</span>,</span>
+<span id="cb17-47"><a href="#cb17-47" aria-hidden="true" tabindex="-1"></a>            <span class="at">nudge_y =</span> .<span class="dv">52</span>,</span>
+<span id="cb17-48"><a href="#cb17-48" aria-hidden="true" tabindex="-1"></a>            <span class="co">#nudge_x = -.01,</span></span>
+<span id="cb17-49"><a href="#cb17-49" aria-hidden="true" tabindex="-1"></a>            <span class="at">fontface =</span> <span class="st">'italic'</span>,</span>
+<span id="cb17-50"><a href="#cb17-50" aria-hidden="true" tabindex="-1"></a>            <span class="at">size =</span> <span class="dv">2</span>)<span class="sc">+</span></span>
+<span id="cb17-51"><a href="#cb17-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Average Rating"</span>,</span>
+<span id="cb17-52"><a href="#cb17-52" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">""</span>,</span>
+<span id="cb17-53"><a href="#cb17-53" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">""</span>,</span>
+<span id="cb17-54"><a href="#cb17-54" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Which Beer Styles Receive the Highest Aroma and Appearance Ratings?"</span>,</span>
+<span id="cb17-55"><a href="#cb17-55" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Ordered by the Average of a Styles Average Aroma and Appearance Ratings"</span>)<span class="sc">+</span></span>
+<span id="cb17-56"><a href="#cb17-56" aria-hidden="true" tabindex="-1"></a>  <span class="fu">my_theme_tweaks</span>()  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/top-aroma-appearance-styles-1.png" class="quarto-figure quarto-figure-center figure-img" style="width:90.0%;height:90.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>As a beer lover, this plot doesn’t surprise me much. Imperial Stouts are known for being highly aromatic and have a beautiful chocolate/ruby color that reviewers seem to like. If I’m just recommending one style, it’s probably be the <strong>American Double/Imperial Stout</strong> because it has high aroma and appearance scores, while the Russian Imperial Stout has the highest appearance score, but a slightly lower aroma score.</p>
+<p>This graphic could also be useful if you care slightly more about, say, the aroma of a beer. You’d just try the styles with the aroma dots on the right side of the dumbbell plot – Quads, Imperial IPAs, Gueuzes, Wild Ales, or Eisbocks perhaps.</p>
+<section id="wrapup" class="level3">
+<h3 class="anchored" data-anchor-id="wrapup">Wrapup</h3>
+<p>This was a really fun dataset to play around with, and I have to say I completely agree with Tanya Cashorali when she says this sort of take home test is a great way to interview data science job candidates. There’s a lot of flexibility in how you perform the analysis and I think you get a good idea of what someone is capable of and how they reason about solving actual problems.</p>
+<p>As usual, the full code for this post can be found <a href="https://github.com/houlad/DataBlog/blob/master/content/post/beer-advocate-reviews.Rmd">here</a> and thanks for reading!</p>
+</section>
+<section id="code-appendix" class="level3">
+<h3 class="anchored" data-anchor-id="code-appendix">Code Appendix</h3>
+<p>This section includes additional code that was used–mainly to explore the data–but that didn’t make it past the cutting stage of report writing. It’s included because it’s interesting, if not directly relevant to the analysis.</p>
+<section id="app.-a" class="level4">
+<h4 class="anchored" data-anchor-id="app.-a">App. A</h4>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># A look at how often beers from the 'macro' breweries are reviewed</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>reviews_raw<span class="sc">%&gt;%</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(brewery_name <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Anheuser-Busch"</span>, <span class="st">"Coors Brewing Company"</span>, <span class="st">"Miller Brewing Co."</span>, <span class="st">"Heineken Nederland B.V."</span>))<span class="sc">%&gt;%</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(brewery_id, brewery_name, <span class="at">sort =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 3
+  brewery_id brewery_name                n
+       &lt;dbl&gt; &lt;chr&gt;                   &lt;int&gt;
+1         29 Anheuser-Busch          15815
+2        306 Coors Brewing Company    7198
+3        105 Miller Brewing Co.       5616
+4         81 Heineken Nederland B.V.  1853</code></pre>
+</div>
+</div>
+</section>
+<section id="app.-b" class="level4">
+<h4 class="anchored" data-anchor-id="app.-b">App. B</h4>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plotting distribution of 5 different review categories</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>reviews_zeros_removed <span class="sc">%&gt;%</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">starts_with</span>(<span class="st">'review'</span>))<span class="sc">%&gt;%</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gather</span>(review_type, score)<span class="sc">%&gt;%</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(score))<span class="sc">+</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>()<span class="sc">+</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>review_type)<span class="sc">+</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> <span class="fu">number_format</span>(), <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">700000</span>), <span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>))<span class="sc">+</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">""</span>,</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Score"</span>,</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Distribution of Review Scores"</span>,</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Scores all have similar shapes, though Appearance may be a tad narrower"</span>)<span class="sc">+</span></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">my_theme_tweaks</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/code-appendix-b-1.png" class="quarto-figure quarto-figure-center figure-img" style="width:90.0%;height:90.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="app.-c" class="level4">
+<h4 class="anchored" data-anchor-id="app.-c">App. C</h4>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># A look at percentage of a breweries beers above 15% ABV</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>beers_above_fifteen_perc <span class="ot">&lt;-</span> reviews_raw <span class="sc">%&gt;%</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(beer_abv), <span class="sc">!</span><span class="fu">is.na</span>(brewery_name))<span class="sc">%&gt;%</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">#alter the brewery name again like above to uniquely identify those duplicate brewery names</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">brewery_name =</span> <span class="fu">ifelse</span>(brewery_name <span class="sc">%in%</span> duplicate_names<span class="sc">$</span>brewery_name, <span class="fu">paste0</span>(brewery_name, <span class="st">"("</span>, brewery_id, <span class="st">")"</span>),</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>                               brewery_name))<span class="sc">%&gt;%</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>(brewery_name,</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>           beer_name,</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>           <span class="at">.keep_all =</span> <span class="cn">TRUE</span>)<span class="sc">%&gt;%</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(brewery_name)<span class="sc">%&gt;%</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">beers =</span> <span class="fu">n</span>(),</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>            <span class="at">beers_above_15 =</span> <span class="fu">sum</span>(beer_abv <span class="sc">&gt;=</span><span class="dv">15</span>),</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>            <span class="at">per_abv_15=</span> beers_above_15<span class="sc">/</span>beers)</span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>beers_above_fifteen_perc<span class="sc">%&gt;%</span></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(beers <span class="sc">&gt;=</span> <span class="dv">10</span>)<span class="sc">%&gt;%</span></span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">brewery_name =</span> <span class="fu">fct_reorder</span>(brewery_name, per_abv_15))<span class="sc">%&gt;%</span></span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">top_n</span>(<span class="dv">25</span>, per_abv_15)<span class="sc">%&gt;%</span></span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(per_abv_15, brewery_name))<span class="sc">+</span></span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()<span class="sc">+</span></span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">labels =</span> <span class="fu">percent_format</span>())<span class="sc">+</span></span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">expand_limits</span>(<span class="at">x =</span> .<span class="dv">02</span>)<span class="sc">+</span></span>
+<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Percentage of Beers Above 15% ABV"</span>,</span>
+<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">""</span>,</span>
+<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Percentage of Breweries Beers which are greater than 15% ABV"</span>,</span>
+<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"For breweries producing more than 10 different beers"</span>)<span class="sc">+</span></span>
+<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">my_theme_tweaks</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/code-appendix-c-1.png" class="quarto-figure quarto-figure-center figure-img" style="width:90.0%;height:90.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="app.-d" class="level4">
+<h4 class="anchored" data-anchor-id="app.-d">App. D</h4>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>aroma_and_appearance <span class="sc">%&gt;%</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">beer_style =</span> <span class="fu">fct_reorder</span>(beer_style, avg_aroma_appear))<span class="sc">%&gt;%</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">top_n</span>(<span class="dv">25</span>, avg_aroma_appear)<span class="sc">%&gt;%</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>avg_overall)<span class="sc">%&gt;%</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gather</span>(key, value, <span class="sc">-</span>beer_style, <span class="sc">-</span>reviews)<span class="sc">%&gt;%</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> value, <span class="at">y =</span> beer_style, <span class="at">color =</span> key, <span class="at">size =</span> reviews, <span class="at">alpha =</span> .<span class="dv">3</span>))<span class="sc">+</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()<span class="sc">+</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">size =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">alpha =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>         <span class="at">color =</span> <span class="fu">guide_legend</span>(<span class="at">override.aes =</span> <span class="fu">list</span>(<span class="at">size =</span> <span class="dv">4</span>,</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>                                                  <span class="at">alpha =</span> .<span class="dv">4</span>)))<span class="sc">+</span></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="fu">c</span>(.<span class="dv">86</span>, .<span class="dv">26</span>))<span class="sc">+</span></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Average Rating"</span>,</span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">""</span>,</span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">""</span>,</span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Which Beer Styles Receive the Highest Aroma and Appearance Ratings?"</span>,</span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Ordered by the Average of a Styles Average Aroma and Appearance Ratings</span><span class="sc">\n</span><span class="st">(Larger Points equal more reviews)"</span>)<span class="sc">+</span></span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">my_theme_tweaks</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/code-appendix-d-1.png" class="quarto-figure quarto-figure-center figure-img" style="width:90.0%;height:90.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+
+
+</section>
+</section>
+</section>
+
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>Link to full code of this analysis <a href="https://github.com/houlad/DataBlog/blob/master/content/post/beer-advocate-reviews.Rmd">here</a><a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>How many macro brews are reviewed in the dataset? App. A<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>I did explore including interaction effects in the model, but they didn’t provide much improvement and they make determining feature importance a little more difficult. Ultimately I decided to ignore them.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
