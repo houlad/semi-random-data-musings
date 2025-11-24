@@ -1,6 +1,6 @@
 ---
 title: "Let's Get Lucky"
-subtitle: "A look into investment income with simulations"
+subtitle: "Looking at investment income with simulations"
 author: "Adam"
 date: "11/11/2025"
 format: 

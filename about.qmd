@@ -15,7 +15,7 @@ about:
       href: https://github.com/houlad
 ---
 
-Hi! I'm just a guy trying to solve problems and answer questions using data. Some people call that a data scientist. I'm primarily interested in data visualization, simulations, and machine learning and their applications to education, energy, healthcare and government policy. I'll probably write about that stuff, but I'll probably write about lots of other stuff too.
+Hi! I'm just a guy trying to solve problems and answer questions using data. Some people call that a data scientist. I'm primarily interested in data visualization, simulations, and machine learning and their applications to education, energy, healthcare and government policy. I'll probably write about that, but I'll probably write about lots of other stuff too.
 
 In my free time you can find me running. Or hiking. Or maybe just reading outside. If I'm not there, I'm probably roasting coffee. Delicious coffee.
 
