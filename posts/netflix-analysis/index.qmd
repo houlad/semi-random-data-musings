@@ -1,5 +1,7 @@
 ---
-title: "Netflix Viewing Data Analysis"
+title: "Netflix Viewing Analysis: A Look Into the Catalog Abyss"
+author: "Adam"
+date: "3/13/2026"
 execute:
     warning: false
 format: 
@@ -928,9 +930,9 @@ We can see that Breaking Bad and Seinfeld still drew in \~36 million and \~40 mi
 
 One last show I want to highlight is Suits. Suits is a bit of a weird one in the dataset in that it's a pretty old show(it ran 2011-2019 on USA network), but it was immensely popular when Netflix added it to their catalog. It was relatively popular during it's initial airing, but I'm not really sure why it took off so fast on Netflix-it garnered over 144 million views in 2023 and was the top performing show on the platform for a while! However, unlike shows like Breaking Bad or Seinfeld, Suits did experience a huge falloff, losing \~65% of it's views by the 2025 report. It still is pulling in \~50 million views in the 2025 report, but it's days of leading the platform are probably over.
 
-Before moving on to more recent, popular shows, I want to point out how important this older show viewing is. I mistakenly thought prior to this analysis that a majority of viewing would be gobbled up by shows that are current and still producing new seasons. That is not strictly true. @tbl-in-prod-shows divides shows into those that had a new season release at some point in 2023-2025 and those that didn't. As you can see, shows not currently releasing new content actually make up the majority of views. Since we just saw the example of Suits-a show that went out of production in 2019-this shouldn't be completely surprising, but the overall split is still a shock. I would have expected the reverse--new shows making up two-thirds or so of views and the remaining third being captured by legacy/new-to-Netflix series. That's why we examine the data and don't just go with our guts though.
+Before moving on to more recent, popular shows, I want to point out how important this older show viewing is. I mistakenly thought prior to this analysis that a majority of viewing would be gobbled up by shows that are current and still producing new seasons. That is not strictly true. @fig-in-prod-shows divides shows into those that had a new season release at some point in 2023-2025 and those that didn't. As you can see, shows not currently releasing new content actually make up the majority of views. Since we just saw the example of Suits-a show that went out of production in 2019-this shouldn't be completely surprising, but the overall split is still a shock. I would have expected the reverse--new shows making up two-thirds or so of views and the remaining third being captured by legacy/new-to-Netflix series. That's why we examine the data and don't just go with our guts though.
 
-![Total views by report, partitioned into legacy shows and shows still in production](in_prod_shows.png){#tbl-in-prod-shows .lightbox}
+![Total views by report, partitioned into legacy shows and shows still in production](in_prod_shows_plot.png){#fig-in-prod-shows .lightbox}
 
 ```{r, in_prod_shows}
 in_prod_shows <- shows_cleaned |> 
@@ -947,6 +949,31 @@ in_prod_shows <- shows_cleaned |>
              decimals = 0) |> 
   format_table_style()
 
+in_prod_shows_plot <- shows_cleaned |> 
+  ungroup() |> 
+  group_by(series) |> 
+  mutate(in_production = any(startsWith(new_release, 'New'))) |>  
+  ungroup() |> 
+  summarise(total_views = sum(views, na.rm = TRUE), .by = c(report_date, in_production)) |> 
+  rename(show_type =  in_production) |> 
+  mutate(show_type = if_else(show_type == TRUE, "New", "Old")) |>
+  arrange(report_date) |> 
+  ggplot(aes(x = report_date, y = total_views))+
+  geom_col(aes(fill = forcats::fct_rev(show_type)))+
+  my_plot_theme()+
+  ggsci::scale_fill_aaas(alpha = .75)+
+  scale_y_continuous(labels = scales::comma_format())+
+  labs(y = 'Total Views',
+       x = 'Report Date',
+       fill = 'Show Type',
+       title = 'New Releases Get Headlines, but Old Shows Get the Majority of Views',
+       subtitle = 'That Breakdown is Changing: Is Netflix Investing More in New Content?')+
+  theme(
+    legend.position = 'bottom',
+    legend.box = 'horizontal'
+  )
+
+# ggsave("in_prod_shows_plot.png", in_prod_shows_plot, width = 10, height = 8)
 # gtsave(in_prod_shows, "in_prod_shows.png")  
 ```
 
