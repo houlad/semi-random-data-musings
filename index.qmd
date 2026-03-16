@@ -11,4 +11,3 @@ page-layout: full
 title-block-banner: true
 ---
 
-<a rel="me" href="https://mastodon.social/@adam_houl">Mastodon</a>

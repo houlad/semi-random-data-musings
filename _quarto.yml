@@ -16,6 +16,9 @@ format:
       - simplex
       - brand
     css: styles.css
+    include-in-header:
+      -text: |
+        <link rel="me" href="https://mastodon.social/@adam_houl">Mastodon</link>
 
 editor: visual
 execute:
