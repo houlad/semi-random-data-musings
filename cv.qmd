@@ -11,7 +11,7 @@ I'm a data scientist with 8 years of experience solving problems and answering q
 
 ### Projects
 
-* [ahoulette.com](ahoulette.com): 8 years of data analysis and communication including:
+* [ahoulette.com](https://ahoulette.com): 8 years of data analysis and communication including:
   + **[Netflix Viewing Analysis](https://ahoulette.com/posts/netflix-analysis/)**: Developed novel cumulative viewing visualization to examine Netflix viewing distribution, finding just 100 shows account for 25% of all viewing. Analysis of period-over-period viewing changes including new season lift, viewer decay, and new release-over-new release growth metrics with bootstrapped confidence intervals.
   + **[Seattle Public Library Checkouts](https://ahoulette.com/posts/seattle-library-analysis/)**: Wrangled 50M+ rows of library checkout data using DuckDB to facilitate rapid exploration including analysis of checkouts by medium, subject, and author. Mined the physical to digital shift for insights, discovering the wrench said shift throws into standardization of book subject classification across mediums. Developed end-to-end modeling pipeline to predict monthly checkouts of titles using XGBoost and tidymodels and deployed model to API using vetiver.
   + **[Investment Income Simulation](https://ahoulette.com/posts/investment-simulation/)**: Developed Monte Carlo simulation pipeline to investigate the role of starting capital in final investment income. Implemented modular simulation logic to generate over 2.2 million simulated investors under a variety of starting conditions and assumptions. Built 'racing' plot visualizations to highlight the 'winners' and interrogated the results, finding that the impact of starting capital is of greater importance than skill.
@@ -45,7 +45,8 @@ I'm a data scientist with 8 years of experience solving problems and answering q
 **Vanderbilt University** - *Blair School of Music, Vocal Performance*
 
 **Certifications:**
-- [Machine Learning Specialization](https://www.coursera.org/account/accomplishments/specialization/TRFHEJDYBHNQ): 4-course specialization by the University of Washington on Coursera
+
+* [Machine Learning Specialization](https://www.coursera.org/account/accomplishments/specialization/TRFHEJDYBHNQ): 4-course specialization by the University of Washington on Coursera
 
 ### Experience
 
