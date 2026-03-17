@@ -44,7 +44,7 @@ I'm a data scientist with 8 years of experience solving problems and answering q
 
 **Vanderbilt University** - *Blair School of Music, Vocal Performance*
 
-**Certifications:**
+**Certifications**:
 
 * [Machine Learning Specialization](https://www.coursera.org/account/accomplishments/specialization/TRFHEJDYBHNQ): 4-course specialization by the University of Washington on Coursera
 

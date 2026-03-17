@@ -255,7 +255,7 @@ p <- total_checkouts_by_month |>
 # ggsave('total_book_checkouts_plot.png', plot = p, bg = 'white')
 ```
 
-![Total Monthly Book Checkouts](total_book_checkouts_plot.png){#fig-one width="100%"}
+![Total Monthly Book Checkouts](total_book_checkouts_plot.png){#fig-one width="100%" .lightbox}
 
 Somewhat surprisingly, at least to me, @fig-one shows a strong upward trend. I would have guessed that fewer people were renting books from the library, but alas, I was wrong. There are two interesting points that jump out. One is the now familiar COVID 'dip', but the other was a mystery to me--someone decidedly *not* from the west coast. After a little googling, it turns out Seattle's library system suffered a [ransomware attack](https://www.libraryjournal.com/story/seattle-public-library-recovering-from-ransomware-attack) in May 2024. It is hard to pin down exactly what services went down and how long they were affected, but the dataset is missing data from May to June of 2024, and it appears July was either partially affected or otherwise incomplete. Aside from those two major disruptions, checkouts keep steadily rising. Seattle's public library system now lends out over 700k books per month.
 
@@ -345,7 +345,7 @@ p2 <- material_type_checkouts_by_month |>
 # ggsave('total_checkouts_by_type.png', p2, bg = 'white')
 ```
 
-![Monthly Checkouts By Book Type](total_checkouts_by_type.png){#fig-two width="100%"}
+![Monthly Checkouts By Book Type](total_checkouts_by_type.png){#fig-two width="100%" .lightbox}
 
 Well, not exactly! @fig-two shows that physical book rentals were decimated by COVID. If I remember correctly, my local library stopped lending completely for the first couple months and even after that it was fairly limited. More confusing is why physical books haven't really recovered. You can see that the average number of physical books that are checked out(indicated by the gray dashed lines) is well over 100k lower than pre-pandemic.
 
@@ -365,7 +365,7 @@ pre_post_covid_monthly_average_table <- material_type_checkouts_by_month |>
 gtsave(pre_post_covid_monthly_average_table, 'pre_post_covid_monthly_average_table.png')
 ```
 
-![Pre/Post Covid Monthly Average Checkouts](pre_post_covid_monthly_average_table.png){#tbl-three}
+![Pre/Post Covid Monthly Average Checkouts](pre_post_covid_monthly_average_table.png){#tbl-three .lightbox}
 
 But if you look at the average *total* monthly checkouts from 2019 vs 2024 in @tbl-three, you clearly see that *more* total books are being checked out. We saw this already in @fig-one, but we can see why in @fig-two. What appears to have happened is that the COVID dip in physical checkouts coincided with a nearly 30% increase in ebook rentals. That '*temporary*' bump in ebook adoption has not been temporary at all and as you can see in @fig-two, ebooks(and audiobooks) are both checked out more often that physical books these days. In the last 15 years, ebook checkouts have increased by roughly 6000%! So physical book checkouts are down(\~-40-50%), but overall, Seattle is lending out more books than ever because digital book checkouts have more than picked up the slack.
 
@@ -410,7 +410,7 @@ p3 <- usage_class_monthly |>
 # ggsave('digital_v_physical_monthly_checkouts.png', p3, bg = 'white')
 ```
 
-![Digital vs Physical Checkouts By Month](digital_v_physical_monthly_checkouts.png){#fig-three width="100%"}
+![Digital vs Physical Checkouts By Month](digital_v_physical_monthly_checkouts.png){#fig-three width="100%" .lightbox}
 
 ### Growth of Digital Monthly Checkouts
 
@@ -541,9 +541,9 @@ median_monthly_changes_table <- material_type_checkouts_by_month |>
 # gtsave(median_monthly_changes_table, 'median_monthly_changes_table.png')
 ```
 
-![Monthly Percentage Change in Checkouts](month_over_month_change_plots.png){#fig-four width="100%"}
+![Monthly Percentage Change in Checkouts](month_over_month_change_plots.png){#fig-four width="100%" .lightbox}
 
-![Monthly Percentage Change Table](median_monthly_changes_table.png){#tbl-four}
+![Monthly Percentage Change Table](median_monthly_changes_table.png){#tbl-four .lightbox}
 
 Month over month, @fig-four shows ebooks and audiobooks growing at roughly 2-3%. There is slight drop, \~-1%, in physical books. Initially, I thought this was still related to some sort of COVID effect, but even when you look at only 2005-2019 physical book data, the -1% monthly change is still there. So physical books checkouts *are* quite stable, but they are also declining. Whether that trend continues remains to be seen.
 
@@ -581,7 +581,7 @@ total_checkouts_by_year <- material_type_checkouts_by_month |>
 # ggsave('total_checkouts_by_year.png', total_checkouts_by_year)
 ```
 
-![Book Checkouts By Year](total_checkouts_by_year.png){#fig-five width="100%"}
+![Book Checkouts By Year](total_checkouts_by_year.png){#fig-five width="100%" .lightbox}
 
 @fig-five confirms what we saw in @fig-one--year after year more books are being checked out.[^2] It is also worth noting how little monthly variation there is in checkouts. I did look into this more closely, but there just was not that much there. I went into it thinking people probably read more in summer months and maybe during the winter(less outdoor activity, people often have time off, etc), but that was, if anything, weakly supported by the data, so I left out that rabbit hole.
 
@@ -620,7 +620,7 @@ goldfinch_table <- top_1000 |>
 gtsave(goldfinch_table, 'goldfinch_table.png')
 ```
 
-![Goldfinch Title Variants](goldfinch_table.png){#tbl-five}
+![Goldfinch Title Variants](goldfinch_table.png){#tbl-five .lightbox}
 
 This one book has 4 different titles! And these aren't variations with one or two counts. Ignoring them can halve(or more) the number of checkouts and makes the count of top books very inaccurate. Honestly, this is pretty annoying to deal with. My first thought was to do some fuzzymatching to group those titles together. This turned out to be very tricky, a little bit finicky, and really didn't work that well. Instead, I used tried and true regex to hack away at the titles and get them semi-grouped. This will *not* be a perfect solution, but it is good enough for my purposes here.
 
@@ -732,7 +732,7 @@ top_25_titles <- make_bar_plot(top_25, x_var = total, y_var = title, .plot_title
 ggsave('top_25_titles.png', top_25_titles)
 ```
 
-![Top Titles](top_25_titles.png){#fig-six width="100%"}
+![Top Titles](top_25_titles.png){#fig-six width="100%" .lightbox}
 
 @fig-six is about what I expected. There is a good mix of fiction and nonfiction and there are a lot of books I recognize from lists like the NYT bestsellers. I will say that, at least initially, I found it a little surprising how low these checkout numbers were. If the library is lending out \~700,000 books a month, how is the most frequently checkout out book-'Educated: A Memoir'- '*only*' checked out \~55,000 times in total? Doing some *extremely* rough napkin math, 'Educated: A Memoir', was published in 2018, which works out to \~650 checkouts a month[^3]. That still seems a little low for a city as big as Seattle, but it doesn't feel quite as, well, wrong as I initially thought.
 
@@ -778,7 +778,7 @@ top_books_by_medium <- e/b/a
 # ggsave('top_books_by_medium.png', top_books_by_medium)
 ```
 
-![Top Title By Medium](top_books_by_medium.png){#fig-seven width="100%"}
+![Top Title By Medium](top_books_by_medium.png){#fig-seven width="100%" .lightbox}
 
 A little bit, yes. @fig-seven shows that physical books are dominated by children's books-it took me a minute, but eventually I realized 'I Love My New Toy!' was not a work of historical fiction. This makes sense to me as an e-ink ebook or an audiobook seem patently inferior to a bright, full color, picture-rich children's book. And the top ebooks and audiobooks are now mainly adult books. With audiobooks, you even see a majority of nonfiction now. I would not have expected this children/adult split before disaggregating the data, but in hindsight it's understandable. Anecdotally, I remember pretty vividly going to the library as a child and walking out with monumental towers of books. I don't think most households have the luxury of maintaining a massive library of children's books which will be outgrown within a couple years. The library is a great alternative! And on the other side, I would expect adults to be the earlier adopters of ebooks and audiobooks-they are the ones with the money to buy those devices. So it only makes sense that more adult oriented books are represented in those titles.
 
@@ -829,7 +829,7 @@ most_popular_book_each_year <- make_bar_plot(top_book_each_year, x_var = total, 
 # ggsave('most_popular_book_each_year.png', most_popular_book_each_year)
 ```
 
-![Most Popular Book Each Year](most_popular_book_each_year.png){#fig-eight width="100%"}
+![Most Popular Book Each Year](most_popular_book_each_year.png){#fig-eight width="100%" .lightbox}
 
 The first thing I notice in @fig-eight is that we only once see a book hold the top spot for multiple years-'The Help' in 2010 and 2011. Once I realized that, I double checked @fig-six and, sure enough, only 8 of the most popular books of a specific year make the all time top 25 list. Most popular books, it turns out, are flashes in a pan. They get heavily marketed when they are first published--the authors make the talk show rounds, they get placed on the NYT/New Yorker/Oprah lists, etc--but then after that initial blitz, attention moves on to the next book getting released.
 
@@ -887,7 +887,7 @@ total_fiction_v_nonfiction <- fiction_and_nonfiction |>
 # ggsave('total_fiction_v_nonfiction.png', total_fiction_v_nonfiction)
 ```
 
-![Yearly Checkouts Fiction v NonFiction](total_fiction_v_nonfiction.png){#fig-nine width="100%"}
+![Yearly Checkouts Fiction v NonFiction](total_fiction_v_nonfiction.png){#fig-nine width="100%" .lightbox}
 
 Broadly, people(at least Seattl-ites?) seem to read a good bit more fiction than nonfiction. But there is an interesting gap that opens up starting around 2011. That is when ebooks started to become popular. If I disaggregate this, I bet we can see what is happening more clearly.
 
@@ -924,7 +924,7 @@ total_fiction_v_nonfiction_by_medium <- fiction_and_nonfiction_by_material_type 
 # ggsave('total_fiction_v_nonfiction_by_medium.png', total_fiction_v_nonfiction_by_medium)
 ```
 
-![Fiction v Nonfiction by Medium](total_fiction_v_nonfiction_by_medium.png){#fig-ten width="100%"}
+![Fiction v Nonfiction by Medium](total_fiction_v_nonfiction_by_medium.png){#fig-ten width="100%" .lightbox}
 
 Well, that is unexpected. Almost no physical books are tagged as nonfiction and very few are even tagged as fiction[^5]. What is going on there? As far as I can tell, this is kind of a result of the Dewey Decimal system. Physical books have been classified by the [hierarchical Dewey system](https://en.wikipedia.org/wiki/List_of_Dewey_Decimal_classes#) for \~150 years. Notably, that system does not have nonfiction and fiction categories. Instead, you have classes, divisions and sections. So science is a class; that's broken down into divisions- science, mathematics, astronomy, physics, etc; and that's divided into sections-algebra, arithmetic, topology, etc. Ultimately, the result is that physical books are classified by the Dewey system while ebooks/audiobooks are classified by some other system. It's not hard to see how this will cause issues when we are trying to compare subject labeling, but books label in one manner and ebooks an entirely different manner.
 
@@ -956,7 +956,7 @@ capital_table <- class_example |>
 gtsave(capital_table, 'capital_table.png')
 ```
 
-![Nonfiction Classification Example](capital_table.png){#tbl-six}
+![Nonfiction Classification Example](capital_table.png){#tbl-six .lightbox}
 
 @tbl-six show the subject labels for 'Capital in the Twenty-First Century'. You see that the physical book version lists the subjects as capital, income distribution, labor economics and wealth, but the ebook version labels it as business and nonfiction. That is *very* different and every book in the dataset is like this. This certainly muddies the picture of what fiction versus nonfiction actually means in the dataset. Thinking back to @fig-nine, it seems like the marked increase in fiction and nonfiction labels is just an artifact of the prevalence of the labeling systems changing with the transition to ebooks/audiobooks. We saw a huge increase in fiction and nonfiction subject tags because, unlike physical books, that's how these new types of books chose to label them!
 
@@ -998,7 +998,7 @@ top_subject_by_medium <- books /ebooks / audiobooks
 # ggsave('top_subjects_by_medium.png', top_subject_by_medium)
 ```
 
-![Favorite Subjects, by Medium](top_subjects_by_medium.png){#fig-eleven width="100%"}
+![Favorite Subjects, by Medium](top_subjects_by_medium.png){#fig-eleven width="100%" .lightbox}
 
 Looking at the top subject labels by medium type, all three look fairly similar with one exception. As we saw in @fig-seven, physical books again have a higher prevalence of graphic or picture focused books--in this case graphic novels, cartoons, picture books(and also probably stories in rhyme). As before, that makes complete sense to me--what would listening to an audiobook of a graphic novel even look like? Aside from the graphical books, the rests of the lists look very similar[^6] and are pretty much what I'd expect. People have long love mysteries, romance novels, fantasy series, etc. I will point out that romance novels are the second most popular subject for ebooks--my tongue-in-cheek remark about people being embarrassed to be seen reading romance may hold true after all!
 
@@ -1032,7 +1032,7 @@ subject_count <- wrap_table(total_subjects |> gt() |> format_table_header()) +
 # ggsave('subject_count.png', subject_count, height = 4)
 ```
 
-![Subject Counts by Medium](subject_count.png){#tbl-seven width="100%"}
+![Subject Counts by Medium](subject_count.png){#tbl-seven width="100%" .lightbox}
 
 @tbl-seven is just a count of how many different subject labels there are for each medium type. That is not a mistake--physical books have over 400,000 different subject classifications! You can glimpse the specificity in the slice of book subjects, but it really is incredible the level of detail the subject categorization goes into. Ebooks and audiobooks are not remotely at the same level of detail. Like I said though, I'm not sure this matters. The 'popular' subjects are more or less the same across the mediums.
 
@@ -1093,11 +1093,11 @@ digital_fiction_v_nonfiction_yearly <- temp |>
 # ggsave('digital_fiction_v_nonfiction_yearly.png', digital_fiction_v_nonfiction_yearly)
 ```
 
-![Digital books, Fiction v Nonfiction](digital_fiction_v_nonfiction.png){#fig-twelve width="100%"}
+![Digital books, Fiction v Nonfiction](digital_fiction_v_nonfiction.png){#fig-twelve width="100%" .lightbox}
 
 If you look at the yearly breakdown in @fig-thirteen, it even looks like that preference is increasing over time. However, after looking into it, I don't think that is true. The yearly increase in digital checkouts as a whole is increasing faster than the increase in fiction v nonfiction checkouts, so I think the apparent increase is mainly a mirage caused by the fast growth of digital checkouts as a whole.
 
-![Digital Checkouts, Yearly](digital_fiction_v_nonfiction_yearly.png){#fig-thirteen width="100%"}
+![Digital Checkouts, Yearly](digital_fiction_v_nonfiction_yearly.png){#fig-thirteen width="100%" .lightbox}
 
 ### Who Are the Most Popular Authors?
 
@@ -1130,7 +1130,7 @@ top_authors <- make_bar_plot(author_totals |> arrange(desc(total)) |>
 # ggsave('top_authors.png', top_authors)
 ```
 
-![Top Authors](top_authors.png){#fig-fourteen width="100%"}
+![Top Authors](top_authors.png){#fig-fourteen width="100%" .lightbox}
 
 I was partially right!. The list is roughly an even split between authors of kids books and authors of popular adult books. While I'd love to see more variety or 'more serious' literature authors on there, I try not to book shame anyone. If you are reading, you are heading in the right direction in my book.
 
@@ -1214,7 +1214,7 @@ proportion_of_total_checkouts_plot <- (all_books + top_100) +
 # ggsave('proportion_of_total_checkouts_plot.png', proportion_of_total_checkouts_plot)
 ```
 
-![Proportion of Total Checkouts](proportion_of_total_checkouts_plot.png){#fig-fifteen width="100%"}
+![Proportion of Total Checkouts](proportion_of_total_checkouts_plot.png){#fig-fifteen width="100%" .lightbox}
 
 @fig-fifteen is a really interesting plot, though it might be slightly confusing at first. In plot A, I took all books and looked at their share of total checkouts. If there were 1000 total checkouts and book A was checked out 150 times, its share of total checkouts would be 15%. If I had a second book, book B, that was checked out 100 times, that books checkout share is 10%. After doing that for every book, if you order the books by checkout share, you can cumulatively sum them up and see the share of total checkouts that X number of books represents. So in my toy example, book A and book B make up 25% of the total checkouts of all books. Plot A is showing the results of doing just that with all the books in the dataset, but also breaking it down by year. In plot A, we can see that earlier years are shifted to the left, meaning there are fewer books. So plot A indicates that people are reading *more* broadly. In 2007, it took roughly 25k different books to make up 75% of total checkouts. By 2024, that number has gone *up* to roughly 50k different books representing 75% of checkouts. This holds true even when you break down the totals into ebooks, books, and audiobooks.
 
@@ -1301,7 +1301,7 @@ goldfinch_ts_plot <- goldfinch |>
 
 ```
 
-![Goldfinch Checkout Time Series](goldfinch_ts_plot.png){#fig-sixteen width="100%"}
+![Goldfinch Checkout Time Series](goldfinch_ts_plot.png){#fig-sixteen width="100%" .lightbox}
 
 ```{r build_xgboost_model, eval = FALSE}
 #| code-fold: show
@@ -1433,7 +1433,7 @@ xgboost_error_metrics_table <- testing |>
 gtsave(xgboost_error_metrics_table, 'xgboost_error_metrics_table.png')
 ```
 
-![Model Error Metrics](xgboost_error_metrics_table.png){#tbl-eight}
+![Model Error Metrics](xgboost_error_metrics_table.png){#tbl-eight .lightbox}
 
 As you can see in @tbl-eight, with a relatively small chunk of the dataset, 1000 books, I'm able to predict checkout counts to within about 3 books a month. We can also look at it as we are off by an average of about 5% on our predictions. That seems pretty solid to me! One important caveat is that I have zero-bounded our predictions. You can't have a negative amount of books checked out, but the model can predict negative values. After fitting the model and generating the predictions, I simply ran through them and set any negative prediction to be equal to zero instead. There is probably a more elegant solution, but I think it makes sense in this use case.
 
@@ -1459,7 +1459,7 @@ gtsave(example_predictions, 'example_predictions.png')
 
 If metrics make your eyes glaze over, @tbl-nine shows some of our model predictions versus the real checkout counts. As you can see, these predictions are not bad at all.
 
-![Model Predictions](example_predictions.png){#tbl-nine}
+![Model Predictions](example_predictions.png){#tbl-nine .lightbox}
 
 Aside from pure model performance, I also am interested in what features are important in my model. I can visualize this with some variable importance plots(VIP).
 
@@ -1477,7 +1477,7 @@ vip_plot <- final_model$model |>
 ggsave('vip_plot.png', vip_plot)
 ```
 
-![Variable Importance Plot](vip_plot.png){#fig-seventeen width="100%"}
+![Variable Importance Plot](vip_plot.png){#fig-seventeen width="100%" .lightbox}
 
 @fig-seventeen shows the *rolling two month average* as far and away the most important feature. Intuitively, that makes a ton of sense to me--what will next months checkouts be? Take the last two months checkouts, average them and predict that. That could be a good base model on its own-in fact it is essentially the MA(moving average) part of ARIMA time series forecasting. After the two month rolling average, we see that *checkout standard deviation* and the *lag 1* rank very highly, followed by a bunch of variables of similar importance. One thing I did find surprising is that dummy variables identifying whether a book was a children's book or whether the month was a summer month or Christmas month didn't really help the model at all.
 
@@ -1585,11 +1585,11 @@ gtsave(sample_metrics, 'deployment_sample_metrics.png')
 
 @tbl-ten shows our models predictions on a new sample of books.
 
-![Sample Predictions, API](deployment_preds_table.png){#tbl-ten}
+![Sample Predictions, API](deployment_preds_table.png){#tbl-ten .lightbox}
 
 If we calculate our performance metrics on this new slice of books, we are still well within the range we were seeing on our test set, so nothing appears to have gone awry in the setup.
 
-![Sample Metrics, API](deployment_sample_metrics.png){#tbl-eleven}
+![Sample Metrics, API](deployment_sample_metrics.png){#tbl-eleven .lightbox}
 
 And that's it! Our predict endpoint returns a vector of checkout predictions given a dataset of model features. From here you could hook this API into your dashboard or whatever else and the world is yours! Of course, this is no where close to a production ready pipeline. For one, the pipeline is a little awkward. If you remember from the variable importance plot, this model heavily relies on rolling averages and lag calculations to generate accurate predictions. Let's say Seattle gets a brand new title in its system. Before you can predict, you need to run the book through a feature building script that calculates all the predictor variables the model uses. Many of those are rolling averages and lags, so with a brand new book, those will be NA for the first N months. Xgboost can handle that just fine, but the model will perform quite badly on brand new books for a month or two until some of those predictor variables give useful data. Even if a book is not brand new, with the setup I have now, you need to pull the last 12 months of data for each book if you want to predict with the maximum lag and rolling average features. This can be quite expensive depending on where that data is stored and how you are pulling that data into the modeling pipeline.
 
