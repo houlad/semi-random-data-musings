@@ -21,4 +21,4 @@ In my free time you can find me running. Or gardening. Or maybe just reading out
 
 If you find any of this interesting(or wrong) and would like to contact me, you can do so through [mastodon](https://mastodon.social/@adam_houl) or [email](mailto:athoul01@gmail.com).
 
-Currently, I'm looking for a data science or data analyst position. Here's my [resume](https://www.dropbox.com/s/0jvfssx99mzveho/Resume.pdf?dl=0) if you or anyone you might know are interested.
+Currently, I'm looking for a data science or data analyst position. Here's my [resume](cv.qmd) if you or anyone you might know are interested.
