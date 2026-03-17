@@ -10,6 +10,8 @@ website:
         href: https://github.com/houlad
       - icon: mastodon
         href: https://mastodon.social/@adam_houl
+      - text: CV
+        href: cv.qmd
 format:
   html:
     theme:

@@ -15,9 +15,9 @@ about:
       href: https://github.com/houlad
 ---
 
-Hi! I'm just a guy trying to solve problems and answer questions using data. Some people call that a data scientist. I'm primarily interested in data visualization, simulations, and machine learning and their applications to education, energy, healthcare and government policy. I'll probably write about that, but I'll probably write about lots of other stuff too.
+Hi! I'm Adam and I love using data to help solve problems and interpret the messy, chaotic world we live in. Some people call that a data scientist. I have 8 years of experience interrogating data to extract interesting, actionable insights and I'm passionate about figuring out clear, intuitive ways to communicate my results so that everyone can come along with me as I learn about the world! I'm primarily interested in data visualization, simulations, and machine learning, particularly their applications to solving challenging problems in education, energy, healthcare and government policy. I'll probably write about that, but I'll probably write about lots of other stuff too.
 
-In my free time you can find me running. Or hiking. Or maybe just reading outside. If I'm not there, I'm probably roasting coffee. Delicious coffee.
+In my free time you can find me running. Or gardening. Or maybe just reading outside. If I'm not there, I'm probably roasting coffee. Delicious coffee.
 
 If you find any of this interesting(or wrong) and would like to contact me, you can do so through [mastodon](https://mastodon.social/@adam_houl) or [email](mailto:athoul01@gmail.com).
 
