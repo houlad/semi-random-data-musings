@@ -144,7 +144,7 @@ ggsave('counts_plot.png', counts_1, height = 6.5)
 
 ```
 
-![Publisher, Material and Total Checkout Counts](counts_plot.png){#tbl-one}
+![Publisher, Material and Total Checkout Counts](counts_plot.png){#tbl-one .lightbox}
 
 @tbl-one's contents are a little ambiguous at first. Remember, I am working with monthly aggregations, so when the publisher table says Random House, Inc. had a total of 1,739,246, what exactly does that mean? That is the number of rows in the data set where Random House, Inc was the publisher of the checked out book--and each of those rows contains a count of the number of checkouts of a specific item for that specific year and month. All three of the tables in @tbl-one follow that format. The main thing I see from this is that there are a lot of potential NA values and there are a lot of different items that the library lends. Books and ebooks are pretty obvious, but a lot of people don't realize how much music and video content the library lends out. @tbl-one also highlights that 2025 and 2005 are especially low on checkouts totals. Why? Well, they are incomplete years. The dataset starts in April 2005 and ends in July of 2025. This is just something to keep in mind during analysis.
 
@@ -164,7 +164,7 @@ counts_2 <- wrap_table(usage_class_counts |>
 # ggsave('item_counts_plot.png', counts_2, height = 1, width = 5)
 ```
 
-![Item Counts](item_counts_plot.png){#tbl-two}
+![Item Counts](item_counts_plot.png){#tbl-two .lightbox}
 
 # What Are We Interested in Exploring in This Dataset?
 
