@@ -13,7 +13,7 @@ website:
       - text: CV
         href: cv.qmd
       - text: CV(pdf)
-        href: cv_pdf.qmd
+        href: cv_pdf.pdf
 format:
   html:
     theme:
