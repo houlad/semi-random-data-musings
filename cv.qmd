@@ -50,7 +50,7 @@ I'm a data scientist with 8 years of experience solving problems and answering q
 
 ### Experience
 
-**Independent Data Researcher & Technical Blogger**
+**Independent Data Scientist & Technical Blogger**
 
 * *ahoulette.com, 2017-Present*
   + Self-directed analytics research spanning the full data landscape, including end-to-end predictive modeling pipelines with XGBoost and vetiver, Monte Carlo simulations of millions of investors, and exploratory data analysis on 100M+ row datasets using DuckDB.
