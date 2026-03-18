@@ -12,6 +12,8 @@ website:
         href: https://mastodon.social/@adam_houl
       - text: CV
         href: cv.qmd
+      - text: CV(pdf)
+        href: cv_pdf.qmd
 format:
   html:
     theme:
