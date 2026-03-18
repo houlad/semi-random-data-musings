@@ -1,5 +1,8 @@
 project:
   type: website
+  render:
+    - "*.qmd"
+    - "!cv_pdf.qmd"
 
 website:
   title: "Semi-Random Data Musings"
