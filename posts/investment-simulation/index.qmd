@@ -388,7 +388,7 @@ It is extremely important to clarify a couple things right away though. These ra
 
 #### 1x Investment Capital with Realistic, Stingy, Boom-Bust Investment Tables
 
-Moving on to our different investment tables, we can see how enormous the outcome between the tables is. If you were to do something like calculate the expected values and expected variance of the different investment tables, you wind up with something like this:
+Moving on to our different investment tables, we can see how enormous the difference in outcomes between tables is. If you were to do something like calculate the expected values and expected variance of the different investment tables, you wind up with something like this:
 
 -   Expected Value: realistic table \> stingy table \> boom-bust table
 -   Expected Variance: boom-bust table \> realistic table \> stingy table
